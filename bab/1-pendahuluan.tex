@@ -6,57 +6,42 @@
 \section{Latar Belakang}
 \label{sec:latarbelakang}
 
-Pesatnya perkembangan roket yang merupakan \lipsum[1]
+Game strategi merupakan permainan di mana pemain mengambil keputusan strategis di dalam game untuk menyelesaikan tujuan dalam game tersebut. Salah satu game tersebut merupakan seri \emph{Civilization}. 
+\emph{Civilization VI} (Civ6) merupakan instalasi terbaru dari seri game ini. Civ6 adalah game strategi berbasis giliran (\emph{Turn-based strategy game}) terpopuler. 
+Dalam game ini, Pemain melakukan aksi bergilir dengan lawannya. Pemain dapat mempunyai lawan berupa manusia lain maupun sebuah agen berbasis \emph{artificial intelligence} (AI).
 
-\lipsum[2]
+Civ6 merupakan game 4X (\emph{Explore, Expand, Exploit, Exterminate}). Dalam game ini, pemain dapat memilih negara-negara yang telah muncul dalam sejarah. 
+Pemain memiliki tujuan untuk menjelajah area di dalam game yang telah dibuat secara acak (\emph{Explore}), memperluas teritori milik pemain (\emph{Expand}), memanfaatkan teritori yang dimiliki (\emph{Exploit}), dan menghancurkan teritori milik lawan (\emph{Exterminate}). 
+Aspek-aspek 4X tersebut menyebabkan game ini menjadi sangat kompleks. Pemain memiliki opsi yang banyak dalam memainkan game ini dibandingkan jenis game lainnya.
+
+Hal ini menjadi tantangan bagi game developer untuk membuat lawan AI yang dapat memberikan tantangan yang cukup terhadap pemain dalam lingkungan game yang kompleks seperti ini. 
+Akan tetapi, game strategi 4X seperti Civ6 masih memiliki kapabilitas agen berbasis AI yang belum optimal. 
+Berkembangnya bidang \emph{Deep Reinforcement Learning} menawarkan teknologi AI yang belum memungkinkan sebelumnya. 
 
 \section{Permasalahan}
 \label{sec:permasalahan}
 
-Dari permasalahan tersebut maka \lipsum[1][1-6]
+Lawan berupa agen berbasis AI dalam Civilization VI saat ini mempunyai keterbatasan. Agen berbasis AI tersebut terpaku hanya pada aturan yang sudah diprogram, sehingga tidak dapat beradaptasi terhadap pemain. Seiring berkembangnya kemampuan pemain dalam game tersebut, pemain akan mendapatkan bahwa agen berbasis AI yang dilawannya sudah tidak lagi memberikan tantangan yang cukup. Hal ini menyebabkan sebuah fenomena bernama Chick Parabola. Chick Parabola merupakan fenomena dimana ketertarikan pemain terhadap game tersebut menurun seiring berkembangnya kemampuan pemain \citep{chickParabola}.
+
+Kurangnya kapabilitas agen berbasis AI dalam Civilization VI sangat terlihat dalam aspek combat. Dalam combat, agen berbasis AI tidak dapat memutuskan aksi unit secara optimal. Agen AI didapatkan sering menempatkan unit di posisi yang tidak logis. Aksi yang dilakukan oleh agen berbasis AI serasa acak. Developer Civilization VI (Firaxis) mencoba mengatasi hal ini dengan menambahkan modifiers. Pada tingkat kesulitan yang tinggi, agen berbasis AI akan mendapatkan modifiers berupa combat value. Secara praktis, bonus ini diberikan untuk menanggulangi kurangnya kemampuan taktis dan strategis agen berbasis AI. Solusi ini tidaklah ideal dalam game strategi yang secara desain mengedepankan kemampuan untuk berfikir dan merencanakan aksi untuk mencapai tujuan.
 
 \section{Batasan Masalah}
 \label{sec:batasanmasalah}
 
-Batasan-batasan dari \lipsum[1][1-3] adalah:
-
-\begin{enumerate}[nolistsep]
-
-  \item Mempermudah \lipsum[2][1-3]
-
-  \item \lipsum[3][1-5]
-
-  \item \lipsum[4][1-5]
-
-\end{enumerate}
+Penelitian ini mencakup pada implementasi algoritma DRL dalam \emph{custom environment}. 
+Mekanisme \emph{environment} mengikuti mekanisme \emph{combat} dalam game Civ6 yang merupakan \emph{hexagonal grid turn-based strategy game} terpopuler saat penelitian ini ditulis. 
+Luas \emph{environment} sebesar 8 x 8. Di tengah \emph{environment} terdapat sebuah kota yang dapat direbut oleh agen AI. Terdapat dua agen dalam penelitian ini, yaitu agen \emph{attacker} dan agen \emph{defender}. 
+Jenis unit yang digunakan oleh agen AI berupa unit jarak dekat (\emph{warrior}) dan unit jarak jauh (\emph{slinger}). Kedua unit tersebut merupakan unit paling awal yang digunakan dalam Civ6.
 
 \section{Tujuan}
 \label{sec:Tujuan}
 
-Tujuan dari \lipsum[1][1-3] adalah:
-
-\begin{enumerate}[nolistsep]
-
-  \item Membuat \lipsum[2][1-3]
-
-  \item \lipsum[3][1-3]
-
-\end{enumerate}
+Tujuan dari penelitian ini adalah menerapkan metode Deep Reinforcement Learning (DRL) pada agen berbasis AI dalam sebuah \emph{custom environment} yang mensimulasikan \emph{combat} dalam game strategi Civ6 dan mencari algoritma yang optimal dalam \emph{environment} ini. 
 
 \section{Manfaat}
 \label{sec:manfaat}
 
-Manfaat dari \lipsum[1][1-3] adalah:
-
-\begin{enumerate}[nolistsep]
-
-  \item Mempermudah \lipsum[2][1-3]
-
-  \item \lipsum[3][1-5]
-
-  \item \lipsum[4][1-5]
-
-\end{enumerate}
+Hasil dari penelitian ini diharapkan dapat memberikan contoh implementasi dalam merancang sebuah agen AI menggunakan metode DRL kepada game developer atau game AI programmer untuk menghasilkan agen AI yang lebih optimal dalam sebuah hexagonal grid turn-based strategy game.
 
 % Format Buku TA baru, ga pake sistematika penulisan
 
