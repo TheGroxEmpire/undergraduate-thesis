@@ -14,27 +14,27 @@ S. Wender dan I. Watson, menggunakan metode \emph{Q-Learning} untuk pemilihan ba
 
 C. Amato dan G. Shani juga menggunakan sebuah metode \emph{Q-Learning} berupa \emph{Dyna-Q} dalam Civilization IV. Agen dalam penelitian ini didapatkan dapat beradaptasi terhadap lawan agen AI yang menggunakan \emph{fixed policy}.
 
-Metode Reinforcement Learning yang digunakan oleh C. Amato dan G. Shani \citep{civ4RL}, serta S. Wender dan I. Watson kami rasa mencukupi untuk penelitian ini. Akan tetapi, game strategi Civilization IV yang dijadikan objek penelitian menggunakan desain game yang tidak lagi umum digunakan. Civilization IV menggunakan rectangular grid dibandingkan hexagonal grid yang banyak digunakan oleh game-game strategi berbasis giliran saat ini. Di dalam Civilization IV, tidak terdapat pembatasan unit per tile yang banyak digunakan oleh game strategi saat ini. Tanpa batasan ini, pemain dapat melakukan doomstacking dimana pemain dapat mengelompokan pasukan dalam satu tile sebanyak-banyaknya. Adanya doomstacking membatasi pilihan strategi yang optimal dalam combat.
+Metode Reinforcement Learning yang digunakan oleh C. Amato dan G. Shani \citep{civ4RL}, serta S. Wender dan I. Watson kami rasa mencukupi untuk penelitian ini. Akan tetapi, game strategi Civilization IV yang dijadikan objek penelitian menggunakan desain game yang tidak lagi umum digunakan. Civilization IV menggunakan rectangular grid dibandingkan hexagonal grid yang banyak digunakan oleh game-game strategi berbasis giliran saat ini. Di dalam Civilization IV, tidak terdapat pembatasan \emph{unit} per tile yang banyak digunakan oleh game strategi saat ini. Tanpa batasan ini, pemain dapat melakukan doomstacking dimana pemain dapat mengelompokan pasukan dalam satu tile sebanyak-banyaknya. Adanya doomstacking membatasi pilihan strategi yang optimal dalam combat.
 
 A. Sestini, et al \citep{deepCrawl} mengembangkan sebuah game bernama DeepCrawl yang menggunakan Deep Reinforcement Learning (DRL) sebagai metode untuk mengembangkan AI dalam game tersebut. AI yang dilatih dalam penelitian ini dapat memberikan tantangan yang cukup bagi banyak pemain.[5] Penggunaan DRL seperti yang digunakan oleh A. Sestini, et al pada game DeepCrawl merupakan metode yang paling optimal dalam game strategi. Penggunaan Neural Network (NN) dapat diskala untuk area game yang besar. Namun, DeepCrawl merupakan jenis game Roguelike yang sangat berbeda dan minim dibandingkan dengan game strategi 4X.
 
 \section{Dasar Mekanisme dalam Combat Civilization VI}
-\emph{Civilization VI} menggunakan \emph{hexagonal grid} yang terdiri dari \emph{hex tiles}, atau \emph{hexes}, sebagai basis pergerakan dan peletakan unit. 
-Unit dapat bergerak ke enam arah menuju \emph{hexes} yang terdekat. Setiap unit memiliki \emph{movement point} (MP). 
-MP menentukan seberapa jauh unit dapat bergerak atau melakukan aksi dalam satu giliran. 
-Setiap pergerakan menuju \emph{hexes} lain akan mengurangi MP yang dimiliki unit tersebut.
-Unit akan mendapatkan seluruh MP kembali setelah gilirannya selesai.
+\emph{Civilization VI} menggunakan \emph{hexagonal grid} yang terdiri dari \emph{hex tiles}, atau \emph{hexes}, sebagai basis pergerakan dan peletakan \emph{unit}. 
+\emph{Unit} dapat bergerak ke enam arah menuju \emph{hexes} yang terdekat. Setiap \emph{unit} memiliki \emph{movement point} (MP). 
+MP menentukan seberapa jauh \emph{unit} dapat bergerak atau melakukan aksi dalam satu giliran. 
+Setiap pergerakan menuju \emph{hexes} lain akan mengurangi MP yang dimiliki \emph{unit} tersebut.
+\emph{Unit} akan mendapatkan seluruh MP kembali setelah gilirannya selesai.
 
-Saat \emph{combat}, unit dapat memakan seluruh MP yang dimilikinya saat itu untuk menyerang unit lain.
-Unit juga memiliki \emph{hit point} (HP), \emph{combat strength (CS)}, \emph{ranged strength} (RS), dan \emph{bombard strength} (BS).
-CS digunakan ketika unit menyerang unit lain secara dekat, RS digunakan ketika unit menyerang unit lain menggunakan senjata jarak jauh, dan BS digunakan oleh \emph{siege} unit ketika menyerang pertahanan kota.
-Unit yang diserang atau menyerang dengan CS akan mendapatkan \emph{damage} mengikuti persamaan eksponential\citep{civ6Combat}:
+Saat \emph{combat}, \emph{unit} dapat memakan seluruh MP yang dimilikinya saat itu untuk menyerang \emph{unit} lain.
+\emph{Unit} juga memiliki \emph{hit point} (HP), \emph{combat strength (CS)}, \emph{ranged strength} (RS), dan \emph{bombard strength} (BS).
+CS digunakan ketika \emph{unit} menyerang \emph{unit} lain secara dekat, RS digunakan ketika \emph{unit} menyerang \emph{unit} lain menggunakan senjata jarak jauh, dan BS digunakan oleh \emph{siege} \emph{unit} ketika menyerang pertahanan kota.
+\emph{Unit} yang diserang atau menyerang dengan CS akan mendapatkan \emph{damage} mengikuti persamaan eksponential\citep{civ6Combat}:
 
 \[Damage(HP) = 30 * e^{(0.04+StrengthDifference)} * randomBetween(75\%, 125\%)\]
 
-Unit yang menerima \emph{damage} akan mendapatkan CS \emph{penalty} sebesar \(10 - HP/10\).
-Unit dapat mendapatkan kembali HP yang hilang (\emph{healing}) dengan cara tidak menggunakan MP yang dimiliki selama gilirannya.
-Unit yang melakukan \emph{healing} mendapatkan +10 HP per giliran.
+\emph{Unit} yang menerima \emph{damage} akan mendapatkan CS \emph{penalty} sebesar \(10 - HP/10\).
+\emph{Unit} dapat mendapatkan kembali HP yang hilang (\emph{healing}) dengan cara tidak menggunakan MP yang dimiliki selama gilirannya.
+\emph{Unit} yang melakukan \emph{healing} mendapatkan +10 HP per giliran.
 
 % input gambar
 \begin{figure}[H]
@@ -59,6 +59,10 @@ Konsep hierarkis ini memungkinkan komputer untuk mempelajari konsep rumit dengan
 \section{Deep Reinforcement Learning}
 \emph{Deep Reinforcement Learning} (DRL) merupakan jenis dari \emph{Reinforcement Learning} (RL), dengan \emph{deep neural network} sebagai representasi state
 dan/atau fungsi pendekatan untuk fungsi \emph{value}, \emph{policy}, \emph{transition model}, atau fungsi \emph{reward} \citep{deepRL}.
+Sebuah environment game umum digunakan sebagai bidang eksperimentasi DRL.
+\emph{DeepMind} membuat sebuah model DRL (\emph{AlphaStar}) yang dapat mengalahkan pemain professional dalam game \emph{Starcraft 2}, membuktikan bahwa DRL dapat digunakan untuk membangun agen AI yang mumpuni dalam sebuah game strategi \citep{alphaStar}.
+\emph{OpenAI} juga mempresentasikan sebuah model yang dapat mengalahkan pemain professional dalam sebuah game \emph{Dota 2} \citep{openaiDota2}.
+Penelitian-penelitian tersebut telah membuktikan kemampuan DRL dalam membuat sebuah agen AI yang mumpuni dalam game strategi.
 
 \section{Deep Q-Learning Network}
 Mnih, et al mengenalkan \emph{Deep Q-Learning Network} (DQN)\citep{deepQN} sebagai pencetus pertama metode \emph{Deep Reinforcement Learning}. DQN menggunakan \emph{neural network} untuk memperkirakan nilai optimal dari fungsi \emph{action value} pada \emph{Q-Learning}.

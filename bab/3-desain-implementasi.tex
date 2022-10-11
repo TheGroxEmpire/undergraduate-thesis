@@ -3,23 +3,54 @@
 
 % Ubah bagian-bagian berikut dengan isi dari desain dan implementasi
 
-Eksperimen utama yang dilakukan pada penelitian ini \lipsum[1][1-5]
+Eksperimen pada penelitian ini akan mengikuti konvensi standar eksperimen DRL sebelumnya, yaitu menguji coba dan mengevaluasi performa agen dalam \emph{environment} dengan membandingkan nilai \emph{reward} yang diterima oleh agen.
+Agen akan melakukan \emph{training} dalam \emph{environment} yang telah dibuat.
+
+\section{Perangkat}
+\label{sec:perangkat}
+
+Eksperimen dalam penelitian ini menggunakan beberapa perangkat keras dan perangkat lunak.
 
 
-\section{Peralatan}
-\label{sec:peralatan}
+\subsection{Perangkat Keras}
+\label{subsec:perangkatkeras}
 
-Alat yang digunakan yaitu: \lipsum[1]
+Proses \emph{training} agen dilakukan dengan sebuah komputer. Komputer tersebut memiliki spesifikasi:
+\begin{itemize}
+  \item Processor: Intel I7 9700K
+  \item Graphics Card: RTX 2080 SUPER
+  \item RAM: 32GB DDR4
+  \item SSD: 512GB NVME PCIE Gen 3
+\end{itemize}
 
-\subsection{Perangkat}
-\label{subsec:perangkat}
+\subsection{Perangkat Lunak}
+\label{subsec:perangkatlunak}
 
-Perangkat yang digunakan menggunakan spesifikasi \lipsum[1]
+Beberapa pernagkat lunak digunakan untuk menunjang pembuatan \emph{environment} dan agen DRL dalam eksperimen ini:
+\begin{itemize}
+  \item Python
+  \item Visual Studio Code
+  \item Tensorboard
+  \item Ray RLlib
+  \item Pygame
+  \item PettingZoo
+  \item Numpy
+  \item Matplotlib
+\end{itemize}
+\section{Desain Environment}
+\label{sec:desainenvironment}
 
-\section{Desain Sistem}
-\label{sec:desainsistem}
+Desain dari \emph{environment} adalah modifikasi dari Inquisitive Otter's Civ6 environment \citep{civ6Environment}. 
+Desain awal dari \emph{environment} ini hanya memiliki sebuah agen \emph{attacker} dan memiliki mekanisme yang kurang sesuai dengan mekanisme Civ6.
+\emph{Environment} merupakan area \emph{pointy top hexagonal grid} berukuran 8x8. Di tengah area tersebut terdapat sebuah \emph{city}.
+\emph{Environment} yang sudah termodifikasi memiliki dua jenis agen yaitu agen \emph{attacker} dan agen \emph{defender}.
+Agen \emph{attacker} memiliki 3 \emph{unit} jarak dekat (\emph{warrior}) dan 2 \emph{unit} jarak jauh (\emph{slinger}).
+Agen \emph{defender} memiliki 2 \emph{warrior} dan 1 \emph{slinger}.
+Penempatan \emph{unit} agen dilakukan secara acak dengan pembatasan.
+\emph{Unit} agen \emph{attacker} ditempatkan minimal sejauh 5 lantai dari \emph{city} di tengah area.
+\emph{Unit} agen \emph{defender} berada di lantai sebelah \emph{city}.
 
-Sistem akan dibuat dengan \lipsum[1-2]
+
 
 % Per blok diagram dijelaskan dan dibuatkan section masing-masing
 
