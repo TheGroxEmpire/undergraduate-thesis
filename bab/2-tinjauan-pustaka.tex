@@ -8,18 +8,18 @@
 
 Penelitian-penelitian sebelumnya menggunakan beberapa metode AI untuk menyelesaikan masalah ini. Sebagian besar dari penelitian-penelitian sebelumnya berusaha untuk memperbaiki algoritma AI di game strategi seperti seri Civilization dalam sisi pembangunan kota atau ekonomi dalam game strategi. Namun, dalam sisi combat untuk game strategi masih belum diteliti.
 
-I. Athaillah, S. M. S. Nugroho, dan M. Hariadi menggunakan Non-dominated Sorting Genetic Algorithm II (NGSA II) untuk optimasi pemilihan distrik kota dalam game Civilization VI. Dibandingkan dengan metode AI yang ada dalam game tersebut, agen AI dalam simulasi penelitian ini dapat memberikan pemilihan distrik kota yang lebih optimal. Penelitian yang dilakukan oleh I. Athaillah, et al hanya berfokus pada pemilihan distrik dalam sebuah kota. Pemilihan distrik berpengaruh terhadap perkembangan ekonomi pemain. Metode NGSA II yang digunakan kurang cukup untuk mengatasi permasalahan dalam combat untuk AI. 
+I. Athaillah, S. M. S. Nugroho, dan M. Hariadi menggunakan Non-dominated Sorting Genetic Algorithm II (NGSA II) untuk optimasi pemilihan distrik kota dalam Civ6. Dibandingkan dengan metode AI yang ada dalam game tersebut, agen AI dalam simulasi penelitian ini dapat memberikan pemilihan distrik kota yang lebih optimal. Penelitian yang dilakukan oleh I. Athaillah, et al hanya berfokus pada pemilihan distrik dalam sebuah kota. Pemilihan distrik berpengaruh terhadap perkembangan ekonomi pemain. Metode NGSA II yang digunakan kurang cukup untuk mengatasi permasalahan dalam combat untuk AI. 
 
 S. Wender dan I. Watson, menggunakan metode \emph{Q-Learning} untuk pemilihan bangunan kota dalam game Civilization IV. Performa agen AI dalam penelitian ini didapatkan lebih baik dibandingkan agen AI dalam game tersebut.
 
 C. Amato dan G. Shani juga menggunakan sebuah metode \emph{Q-Learning} berupa \emph{Dyna-Q} dalam Civilization IV. Agen dalam penelitian ini didapatkan dapat beradaptasi terhadap lawan agen AI yang menggunakan \emph{fixed policy}.
 
-Metode Reinforcement Learning yang digunakan oleh C. Amato dan G. Shani \citep{civ4RL}, serta S. Wender dan I. Watson kami rasa mencukupi untuk penelitian ini. Akan tetapi, game strategi Civilization IV yang dijadikan objek penelitian menggunakan desain game yang tidak lagi umum digunakan. Civilization IV menggunakan rectangular grid dibandingkan hexagonal grid yang banyak digunakan oleh game-game strategi berbasis giliran saat ini. Di dalam Civilization IV, tidak terdapat pembatasan \emph{unit} per tile yang banyak digunakan oleh game strategi saat ini. Tanpa batasan ini, pemain dapat melakukan doomstacking dimana pemain dapat mengelompokan pasukan dalam satu tile sebanyak-banyaknya. Adanya doomstacking membatasi pilihan strategi yang optimal dalam combat.
+Metode Reinforcement Learning yang digunakan oleh C. Amato dan G. Shani \citep{civ4RL}, serta S. Wender dan I. Watson kami rasa mencukupi untuk penelitian ini. Akan tetapi, game strategi Civilization IV yang dijadikan objek penelitian menggunakan desain game yang tidak lagi umum digunakan. Civilization IV menggunakan rectangular grid dibandingkan hexagonal grid yang banyak digunakan oleh game-game strategi berbasis giliran saat ini. Di dalam Civilization IV, tidak terdapat pembatasan \emph{unit} per tile yang banyak digunakan oleh game strategi saat ini. Tanpa batasan ini, pemain dapat melakukan \emph{doomstacking} dimana pemain dapat mengelompokan pasukan dalam satu tile sebanyak-banyaknya. Adanya \emph{doomstacking} membatasi pilihan strategi yang optimal dalam combat.
 
 A. Sestini, et al \citep{deepCrawl} mengembangkan sebuah game bernama DeepCrawl yang menggunakan Deep Reinforcement Learning (DRL) sebagai metode untuk mengembangkan AI dalam game tersebut. AI yang dilatih dalam penelitian ini dapat memberikan tantangan yang cukup bagi banyak pemain.[5] Penggunaan DRL seperti yang digunakan oleh A. Sestini, et al pada game DeepCrawl merupakan metode yang paling optimal dalam game strategi. Penggunaan Neural Network (NN) dapat diskala untuk area game yang besar. Namun, DeepCrawl merupakan jenis game Roguelike yang sangat berbeda dan minim dibandingkan dengan game strategi 4X.
 
 \section{Dasar Mekanisme dalam Combat Civilization VI}
-\emph{Civilization VI} menggunakan \emph{hexagonal grid} yang terdiri dari \emph{hex tiles}, atau \emph{hexes}, sebagai basis pergerakan dan peletakan \emph{unit}. 
+Civ6 menggunakan \emph{hexagonal grid} yang terdiri dari \emph{hex tiles}, atau \emph{hexes}, sebagai basis pergerakan dan peletakan \emph{unit}. 
 \emph{Unit} dapat bergerak ke enam arah menuju \emph{hexes} yang terdekat. Setiap \emph{unit} memiliki \emph{movement point} (MP). 
 MP menentukan seberapa jauh \emph{unit} dapat bergerak atau melakukan aksi dalam satu giliran. 
 Setiap pergerakan menuju \emph{hexes} lain akan mengurangi MP yang dimiliki \emph{unit} tersebut.
@@ -30,7 +30,7 @@ Saat \emph{combat}, \emph{unit} dapat memakan seluruh MP yang dimilikinya saat i
 CS digunakan ketika \emph{unit} menyerang \emph{unit} lain secara dekat, RS digunakan ketika \emph{unit} menyerang \emph{unit} lain menggunakan senjata jarak jauh, dan BS digunakan oleh \emph{siege} \emph{unit} ketika menyerang pertahanan kota.
 \emph{Unit} yang diserang atau menyerang dengan CS akan mendapatkan \emph{damage} mengikuti persamaan eksponential\citep{civ6Combat}:
 
-\[Damage(HP) = 30 * e^{(0.04+StrengthDifference)} * randomBetween(75\%, 125\%)\]
+\[Damage(HP) = 30 * e^{(0.04+StrDiff)} * randomBetween(75\%, 125\%)\]
 
 \emph{Unit} yang menerima \emph{damage} akan mendapatkan CS \emph{penalty} sebesar \(10 - HP/10\).
 \emph{Unit} dapat mendapatkan kembali HP yang hilang (\emph{healing}) dengan cara tidak menggunakan MP yang dimiliki selama gilirannya.
@@ -47,10 +47,19 @@ CS digunakan ketika \emph{unit} menyerang \emph{unit} lain secara dekat, RS digu
     \label{fig:hex_action}
 \end{figure}
 
-\section{Machine Learning}
+\emph{Unit} jarak dekat (\emph{melee unit})  mempunyai \emph{Zone of Control} (ZoC). ZoC berada di lantai diseluruh sisi sebelah dimana 
+\emph{unit} tersebut berada. Ketika sebuah unit memasuki ZoC milik unit lawan, unit tersebut tidak dapat bergerak ke lantai lain, namun
+unit tersebut dapat melakukan aksi seperti menyerang dan sebagainya.
 
-\emph{Machine Learning} secara definisi merupakan suatu bidang ilmu komputer yang berkembang dari studi pengenalan pola dan teori pembelajaran komputasional dalam kecerdasan buatan. 
-Prediksi dataset \emph{Machine Learning} dibangun dari sebuah model yang mendapatkan contoh input untuk membuat prediksi berbasis data daripada mengikuti sebuah instruksi program statis \citep{machineL}.
+\section{Machine Learning}
+\emph{Machine Learning} (ML) secara definisi merupakan suatu bidang ilmu komputer yang berkembang dari studi pengenalan pola dan teori pembelajaran komputasional dalam kecerdasan buatan. 
+Prediksi dataset ML dibangun dari sebuah model yang mendapatkan contoh input untuk membuat prediksi berbasis data daripada mengikuti sebuah instruksi program statis \citep{machineL}.
+
+\section{Reinforcment Learning}
+\emph{Reinforcment Learning} (RL) merupakan pembelajaran dimana sebuah pembelajar (\emph{learner}) tidak diberitahu
+secara eksplisit akan apa yang harus dilakukan, tetapi harus menemukan aksi (\emph{actions}) 
+manakah yang akan memberikan imbalan (\emph{reward}) terbesar. 
+RL berbeda akan paradigma ML yang lain seperti \emph{supervised learning} atau \emph{unsupervised learning} \citep{reinforcmentL}. 
 
 \section{Deep Learning}
 \emph{Deep Learning} merupakan bentuk dari \emph{machine learning} yang memungkinkan komputer untuk mempelajari pengalamannya dan memahami dunia secara konsep hierarkis. 
@@ -68,40 +77,80 @@ Penelitian-penelitian tersebut telah membuktikan kemampuan DRL dalam membuat seb
 Mnih, et al mengenalkan \emph{Deep Q-Learning Network} (DQN)\citep{deepQN} sebagai pencetus pertama metode \emph{Deep Reinforcement Learning}. DQN menggunakan \emph{neural network} untuk memperkirakan nilai optimal dari fungsi \emph{action value} pada \emph{Q-Learning}.
 DQN, menggunakan \emph{experience replay} untuk mengatasi ketidakstabilan dan divergensi yang muncul pada \emph{Q-Learning} seperti, \emph{off-policy, function approximation,} dan \emph{bootstraping} \citep{deepQNFunction}.
 
+DQN merepresentasikan sebuah fungsi \emph{action-value}:
+\begin{equation}
+  Q_*(s,a) = \sum_{s' \in \mathcal{S}, r\in\mathcal{R}}p(s',r|s,a)(r + \gamma \max_{a'\in\mathcal{A}(s')}Q_*(s',a'))
+  \label{Eq:DQNEquation}
+\end{equation}
+
+Dimana $(s)$ merupakan keadaan setelah observasi dilakukan, sedangkan $(a)$ adalah aksi yang telah dilakukan sebelum observasi.
+$(r)$ merupakan \emph{reward} yang didapatkan setelah melakukan aksi tersebut. Reward tersebut akan dikalikan dengan $(\gamma)$ atau \emph{discount}.
+
+Saat pembelajaran, dilakukan \emph{Q-learning update} terhadap sampel (\emph{minibatches}) dari \emph{experience} $(s,a,r,s') \sim U(D)$
+yang diambil secara acak dari sebuah kumpulan sampel. \emph{Q-learning update} dilakukan pada itersi i dan menggunakan fungsi \emph{loss}:
+
+\begin{equation}
+	\ell (\theta) = \mathbb E _{s, a, r, s'} \sim U(D) \left[r + 
+    \gamma \max _{a'} Q (s', a';\theta^{-}_{i}) 
+    - Q(s, a;\theta_{i})\right]^2
+    \label{Eq:DQNLossFunction}
+\end{equation}
+
+$\gamma$ merupakan faktor \emph{discount}, $\theta$ merupakan parameter dari \emph{Q-network} pada iterasi i 
+dan $\theta^{-}_{i}$ merupakan parameter \emph{target network} yang diupdate hanya dengan 
+parameter \emph{Q-network} $(\theta_{i})$ pada setiap \emph{steps} $C$ \citep{deepQN}.
+
 \begin{figure}[H]
   \centering
     % Nama dari file gambar yang diinputkan
-    \includegraphics[scale=0.35]{gambar/dqn_algorithm.png}
+    \includegraphics[scale=0.4]{gambar/dqn_algorithm.png}
     % Keterangan gambar yang diinputkan
-    \caption{Algorithma \emph{Deep Q-Learning}}
+    \caption{Algorithma \emph{Deep Q-Learning} \citep{deepQN}.}
     % Label referensi dari gambar yang diinputkan
     \label{fig:dqnAlgorithm}
 \end{figure}
 
 DQN memiliki kelemahan dimana perkiraan dari sebuah \emph{action value} nilainya terlalu besar.
 DQN juga memiliki tendensi untuk mengejar \emph{action value} yang terbesar walau mungkin aksi tersebut tidaklah optimal pada situasi yang sedang dihadapi.
-Beberapa varian DQN mencoba untuk menyelesaikan masalah ini. 
+Melihat pada persamaan \ref{Eq:DQNEquation}, didapatkan $\max_{a'\in\mathcal{A}(s')}Q_*(s',a')$
+yang mengambil nilai perkiraan maksimum secara implisit. Hal ini dapat menyebabkan \emph{maximization bias}
+saat pembelajaran \cite{doubleQLearning}.
 
 \emph{Double Deep Q-Learning} (DDQN) mencoba menstabilkan nilai \emph{action value} yang terlalu besar dengan menggunakan dua cabang \emph{hidden layer} pada DQN \citep{doubleDQN}.
 
 \begin{figure}[H]
   \centering
     % Nama dari file gambar yang diinputkan
-    \includegraphics[scale=0.2]{gambar/ddqn_architecture.png}
+    \includegraphics[scale=0.6]{gambar/ddqn_algorithm.png}
     % Keterangan gambar yang diinputkan
-    \caption{Arsitektur model algoritma \emph{Double Deep Q-Learning}}
+    \caption{Algoritma \emph{Double Deep Q-Learning} \citep{doubleDQN}.}
     % Label referensi dari gambar yang diinputkan
-    \label{fig:ddqnArchitecture}
+    \label{fig:ddqnAlgorithm}
 \end{figure}
 
-\emph{Prioritized Experience Replay} (PER) meluaskan fungsi \emph{experience replay function} dengan mempelajari \emph{replay memories} yang memiliki nilai divergensi \emph{reward} yang nyata dengan yang diharapkan.\citep{prioritizedER}
+Algoritma DQN biasa melakukan \emph{uniform sampling} pada \emph{replay buffer} dimana
+\emph{experience replay} diambil secara acak. Akan tetapi, hal ini dapat menyebabkan pengambilan sampel \emph{experience replay} yang kurang berguna pada saat pembelajaran.
+Pada \emph{Prioritized Experience Replay} (PER), \emph{experience replay} yang lebih penting dalam
+pembelajaran akan diambil lebih sering.
+Prioritas ini didapatkan dengan mengithung nilai \emph{TD-error} \citep{prioritizedER}:
+
+\begin{equation}
+  \delta_{i} = r_{t} + \gamma \max_{a\in\mathcal{A}}Q_{\theta ^{-}}(s_{t+1},a) - Q_{\theta}(s_{t},a_{t})
+  \label{Eq:DQNTDErrorEquation}
+\end{equation}
+atau pada \emph{Double} DQN:
+
+\begin{equation}
+  \delta_{i} = r_{t} + \gamma Q_{\theta^{-}} \left(s_{t+1}, \text{argmax}_{a\in\mathcal{A}}Q_{\theta ^{-}}(s_{t+1},a)\right) - Q_{\theta}(s_{t},a_{t}) 
+  \label{Eq:DDQNTDErrorEquation}
+\end{equation}
 
 \begin{figure}[H]
   \centering
     % Nama dari file gambar yang diinputkan
-    \includegraphics[scale=0.3]{gambar/ddqn_per_algorithm.png}
+    \includegraphics[scale=0.4]{gambar/ddqn_per_algorithm.png}
     % Keterangan gambar yang diinputkan
-    \caption{Algorithma \emph{Double Deep Q-Learning} dengan \emph{Prioritized Experience Replay}}
+    \caption{Algorithma \emph{Double Deep Q-Learning} dengan \emph{Prioritized Experience Replay} \citep{prioritizedER}.}
     % Label referensi dari gambar yang diinputkan
     \label{fig:dqnPerAlgorithm}
 \end{figure}
@@ -113,7 +162,7 @@ Kedua bagian ini digabungkan menjadi satu \emph{action-advantage Q function} \ci
 \begin{figure}[H]
   \centering
     % Nama dari file gambar yang diinputkan
-    \includegraphics[scale=0.35]{gambar/dqn_vs_dueling_dqn_architecture.jpg}
+    \includegraphics[scale=0.5]{gambar/dqn_vs_dueling_dqn_architecture.jpg}
     % Keterangan gambar yang diinputkan
     \caption{Arsitektur DQN (di atas) dibandingkan dengan Arsitektur \emph{Dueling} DQN (di bawah)}
     % Label referensi dari gambar yang diinputkan
@@ -131,9 +180,9 @@ Ape-X DQN ditemukan lebih efisien dan lebih baik daripada algoritma DQN lainnya 
 \begin{figure}[H]
   \centering
     % Nama dari file gambar yang diinputkan
-    \includegraphics[scale=0.5]{gambar/apex1.png}
+    \includegraphics[scale=0.6]{gambar/apex1.png}
     % Keterangan gambar yang diinputkan
-    \caption{Arsitektur Ape-X dengan beberapa \emph{actor} dan menambahkan \emph{experiences} ke pada sebuah \emph{learner}}
+    \caption{Arsitektur Ape-X dengan beberapa \emph{actor} dan menambahkan \emph{experiences} ke pada sebuah \emph{learner} \citep{apexDQN}.}
     % Label referensi dari gambar yang diinputkan
     \label{fig:apexDQNArchitecture}
 \end{figure}
@@ -149,7 +198,7 @@ PPO memiliki beberapa keuntungan dari TRPO dengan implementasi yang lebih mudah,
 \begin{figure}[H]
   \centering
     % Nama dari file gambar yang diinputkan
-    \includegraphics[scale=0.5]{gambar/ppo_model.png}
+    \includegraphics[scale=0.6]{gambar/ppo_model.png}
     % Keterangan gambar yang diinputkan
     \caption{Arsitektur algoritma PPO}
     % Label referensi dari gambar yang diinputkan
@@ -160,7 +209,8 @@ PPO memiliki beberapa keuntungan dari TRPO dengan implementasi yang lebih mudah,
 
 IMPALA merupakan sebuah \emph{framework} \emph{actor-critic} yang memisahkan antara acting dengan learning.
 IMPALA menggunakan \emph{V-trace} dimana \emph{learner} mempelajari \emph{experience trajectory}.
-GPU \emph{learner} pusat melakukan \emph{stochastic gradient descent} (SGD) pada sebuah \emph{tight loop} saat mengambil sampel \emph{batches} dari proses CPU \emph{actor} secara sinkronus.
+GPU \emph{learner} pusat melakukan \emph{stochastic gradient descent} (SGD) pada sebuah \emph{tight loop} saat mengambil sampel 
+\emph{batches} dari proses CPU \emph{actor} secara sinkronus \citep{impala}.
 
 Arsitektur IMPALA dapat mencapai \emph{throughput} yang tinggi, namun \emph{policy} yang digunakan untuk menghasilkan \emph{trajectory} terlambat selama beberapa \emph{update} jika dibandingkan dengan \emph{policy} yang ada pada \emph{learner} pada saat perhitungan gradien.
 Oleh karena itu, IMPALA menggunakan \emph{V-trace off policy actor critic}
@@ -168,51 +218,58 @@ Oleh karena itu, IMPALA menggunakan \emph{V-trace off policy actor critic}
 \begin{figure}[H]
   \centering
     % Nama dari file gambar yang diinputkan
-    \includegraphics[scale=0.05]{gambar/impala_worker.jpg}
+    \includegraphics[scale=0.8]{gambar/impala_worker.png}
     % Keterangan gambar yang diinputkan
     \caption{Kiri: Sebuah learner. Setiap \emph{actor} menghasilkan \emph{trajectories} dan mengirimkannya melalui sebuah \emph{queue} kepada \emph{learner}.
     Sebelum memulai \emph{trajectory} selanjutnya, \emph{actor} menerima \emph{policy parameters} terbaru dari \emph{learner}.
-    Kanan: Banyak \emph{learner}. \emph{Policy parameters} didistribusikan kepada lebih dari satu \emph{learner} yang bekerja secara sinkron}
+    Kanan: Banyak \emph{learner}. \emph{Policy parameters} didistribusikan kepada lebih dari satu \emph{learner} yang bekerja secara sinkron \citep{impala}.}
     % Label referensi dari gambar yang diinputkan
     \label{fig:impalaSingleVsMultipleLearner}
 \end{figure}
 
-% % Contoh input gambar
-% \begin{figure}[ht]
-%   \centering
+\section{PettingZoo}
 
-%   % Ubah dengan nama file gambar dan ukuran yang akan digunakan
-%   \includegraphics[scale=0.35]{gambar/roketluarangkasa.jpg}
+PettingZoo merupakan sebuah \emph{library} untuk membuat \emph{environment} yang mendukung \emph{multi agent reinforcement learning} (MARL).
+PettingZoo menggunakan sebuah model formal \emph{game environment} baru yang disebut \emph{Agent Environment Cycle} (AEC). Dalam AEC, agen akan secara sekuensial melakukan \emph{observations}, mengambil \emph{actions}, mendapatkan \emph{rewards} yang diberikan dari agen lain, dan kemudian agen berikutnya melakukan \emph{actions}.
+Model ini sangat cocok untuk game berbasis giliran \citep{pettingZoo}.
 
-%   % Ubah dengan keterangan gambar yang diinginkan
-%   \caption{Peluncuran roket luar angkasa \emph{Discovery} \citep{roketluarangkasa}.}
-%   \label{fig:roketluarangkasa}
-% \end{figure}
+\begin{figure}[H]
+  \centering
+    % Nama dari file gambar yang diinputkan
+    \includegraphics[scale=0.5]{gambar/actor_environment_cycle.png}
+    % Keterangan gambar yang diinputkan
+    \caption{Diagram AEC pada \emph{environment} dengan dua agen seperti catur}
+    % Label referensi dari gambar yang diinputkan
+    \label{fig:actorEnvironmentCycle}
+\end{figure}
 
-% Roket luar angkasa merupakan \lipsum[1]
+PettingZoo memiliki API yang mirip dengan Gym. Kemiripan API ini memudahkan pengguna untuk menggunakan ataupun mengubah \emph{library environment} dari Gym ke PettingZoo ataupun sebaliknya.
 
-% \emph{Discovery}, Gambar \ref{fig:roketluarangkasa}, merupakan \lipsum[2]
+% Contoh pembuatan potongan kode
+\begin{lstlisting}[
+  language=Python,
+  caption={Contoh dasar penggunaan API Gym.},
+  label={lst:gymAPI}
+]
+  import gym
+  env = gym.make('CartPole-v0')
+  observation = env.reset()
+  for _ in range(1000):
+  action = policy(observation)
+  observation, reward, done, info = env.step(action)
+\end{lstlisting}
 
-% % Per Teori Penunjang dibuat section baru
-
-% \section{Gravitasi}
-% \label{sec:gravitasi}
-
-% Gravitasi merupakan \lipsum[1]
-
-% \subsection{Hukum Newton}
-% \label{subsec:hukumnewton2}
-
-% Newton \citep{newton1687} pernah merumuskan bahwa \lipsum[1]
-% Kemudian menjadi persamaan seperti pada persamaan \ref{eq:hukumpertamanewton}.
-
-% % Contoh pembuatan persamaan
-% \begin{equation}
-%   \label{eq:hukumpertamanewton}
-%   \sum \mathbf{F} = 0\; \Leftrightarrow\; \frac{\mathrm{d} \mathbf{v} }{\mathrm{d}t} = 0.
-% \end{equation}
-
-% \subsection{Anti Gravitasi}
-% \label{subsec:antigravitasi}
-
-% Anti gravitasi merupakan \lipsum[1]
+\begin{lstlisting}[
+  language=Python,
+  caption={Contoh dasar penggunaan API PettingZoo.},
+  label={lst:pettingZooAPI}
+]
+  from ray.rllib.examples.env.multi_agent
+  import MultiAgentCartPole
+  env = MultiAgentCartPole()
+  observation = env.reset()
+  for _ in range(1000):
+  actions = policies(agents, observation)
+  observation, rewards, dones,
+  infos = env.step(actions)
+\end{lstlisting}

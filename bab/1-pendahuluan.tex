@@ -13,71 +13,60 @@ Dalam game ini, Pemain melakukan aksi bergilir dengan lawannya. Pemain dapat mem
 Civ6 merupakan game 4X (\emph{Explore, Expand, Exploit, Exterminate}). Dalam game ini, pemain dapat memilih negara-negara yang telah muncul dalam sejarah. 
 Pemain memiliki tujuan untuk menjelajah area di dalam game yang telah dibuat secara acak (\emph{Explore}), memperluas teritori milik pemain (\emph{Expand}), memanfaatkan teritori yang dimiliki (\emph{Exploit}), dan menghancurkan teritori milik lawan (\emph{Exterminate}). 
 Aspek-aspek 4X tersebut menyebabkan game ini menjadi sangat kompleks. Pemain memiliki opsi yang banyak dalam memainkan game ini dibandingkan jenis game lainnya.
-
 Hal ini menjadi tantangan bagi game developer untuk membuat lawan AI yang dapat memberikan tantangan yang cukup terhadap pemain dalam lingkungan game yang kompleks seperti ini. 
 Akan tetapi, game strategi 4X seperti Civ6 masih memiliki kapabilitas agen berbasis AI yang belum optimal. 
+
+\begin{figure}[H]
+    \centering
+      % Nama dari file gambar yang diinputkan
+      \includegraphics[scale=0.2]{gambar/civ6_screenshot.png}
+      % Keterangan gambar yang diinputkan
+      \caption{\emph{Combat} dalam \emph{Civilization} VI}
+      % Label referensi dari gambar yang diinputkan
+      \label{fig:civ6_combat_image}
+  \end{figure}
+
+Dengan mengintegrasikan teknik-teknik \emph{machine learning}, AI memiliki potensial untuk bertindak seperti kemampuan manusia \citep{humanLevelAI}.
 Berkembangnya bidang \emph{Deep Reinforcement Learning} menawarkan teknologi AI yang belum memungkinkan sebelumnya. 
 
 \section{Permasalahan}
 \label{sec:permasalahan}
 
-Lawan berupa agen berbasis AI dalam Civilization VI saat ini mempunyai keterbatasan. Agen berbasis AI tersebut terpaku hanya pada aturan yang sudah diprogram, sehingga tidak dapat beradaptasi terhadap pemain. Seiring berkembangnya kemampuan pemain dalam game tersebut, pemain akan mendapatkan bahwa agen berbasis AI yang dilawannya sudah tidak lagi memberikan tantangan yang cukup. Hal ini menyebabkan sebuah fenomena bernama Chick Parabola. Chick Parabola merupakan fenomena dimana ketertarikan pemain terhadap game tersebut menurun seiring berkembangnya kemampuan pemain \citep{chickParabola}.
+Lawan berupa agen berbasis AI dalam Civ6 saat ini mempunyai keterbatasan. 
+Agen berbasis AI tersebut terpaku hanya pada aturan yang sudah diprogram, 
+sehingga tidak dapat beradaptasi terhadap pemain. 
+Seiring berkembangnya kemampuan pemain dalam game tersebut, 
+pemain akan mendapatkan bahwa agen berbasis AI yang dilawannya sudah tidak lagi 
+memberikan tantangan yang cukup. Hal ini menyebabkan sebuah fenomena bernama \emph{Chick Parabola}. 
+\emph{Chick Parabola} merupakan fenomena dimana ketertarikan pemain terhadap game tersebut menurun seiring berkembangnya kemampuan pemain \citep{chickParabola}.
 
-Kurangnya kapabilitas agen berbasis AI dalam Civilization VI sangat terlihat dalam aspek combat. Dalam combat, agen berbasis AI tidak dapat memutuskan aksi unit secara optimal. Agen AI didapatkan sering menempatkan unit di posisi yang tidak logis. Aksi yang dilakukan oleh agen berbasis AI serasa acak. Developer Civilization VI (Firaxis) mencoba mengatasi hal ini dengan menambahkan modifiers. Pada tingkat kesulitan yang tinggi, agen berbasis AI akan mendapatkan modifiers berupa combat value. Secara praktis, bonus ini diberikan untuk menanggulangi kurangnya kemampuan taktis dan strategis agen berbasis AI. Solusi ini tidaklah ideal dalam game strategi yang secara desain mengedepankan kemampuan untuk berfikir dan merencanakan aksi untuk mencapai tujuan.
+Kurangnya kapabilitas agen berbasis AI dalam Civ6 sangat terlihat dalam aspek combat. Dalam combat, agen berbasis AI tidak dapat memutuskan aksi unit secara optimal. Agen AI didapatkan sering menempatkan unit di posisi yang tidak logis. 
+Aksi yang dilakukan oleh agen berbasis AI serasa acak. 
+Developer Civ6 (Firaxis) mencoba mengatasi hal ini dengan menambahkan modifiers. 
+Pada tingkat kesulitan yang tinggi, agen berbasis AI akan mendapatkan modifiers berupa combat value. Secara praktis, bonus ini diberikan untuk menanggulangi kurangnya kemampuan taktis dan strategis agen berbasis AI. 
+Solusi ini tidaklah ideal dalam game strategi yang secara desain mengedepankan kemampuan untuk berfikir dan merencanakan aksi untuk mencapai tujuan.
+Diperlukanlah sebuah teknik maupun teknologi AI baru untuk mengatasi masalah ini.
 
 \section{Batasan Masalah}
 \label{sec:batasanmasalah}
 
-Penelitian ini mencakup pada implementasi algoritma DRL dalam \emph{custom environment}. 
+Penelitian ini mencakup pada implementasi beberapa algoritma \emph{state-of-the-art} (SOTA) DRL dalam sebuah \emph{custom environment}. 
 Mekanisme \emph{environment} mengikuti mekanisme \emph{combat} dalam game Civ6 yang merupakan \emph{hexagonal grid turn-based strategy game} terpopuler saat penelitian ini ditulis. 
 Luas \emph{environment} sebesar 8 x 8. Di tengah \emph{environment} terdapat sebuah kota yang dapat direbut oleh agen AI. Terdapat dua agen dalam penelitian ini, yaitu agen \emph{attacker} dan agen \emph{defender}. 
 Jenis unit yang digunakan oleh agen AI berupa unit jarak dekat (\emph{warrior}) dan unit jarak jauh (\emph{slinger}). Kedua unit tersebut merupakan unit paling awal yang digunakan dalam Civ6.
+Sebuah game penuh berbasis DRL berada di luar batasan penelitian ini. Namun, \emph{custom environment} yang digunakan sebagai prototipe akan menjadi \emph{proof of concept}
+akan kapabilitas DRL dalam \emph{hexagonal grid turn-based strategy game}.
 
 \section{Tujuan}
 \label{sec:Tujuan}
 
-Tujuan dari penelitian ini adalah menerapkan metode Deep Reinforcement Learning (DRL) pada agen berbasis AI dalam sebuah \emph{custom environment} yang mensimulasikan \emph{combat} dalam game strategi Civ6 dan mencari algoritma yang optimal dalam \emph{environment} ini. 
+Tujuan penelitian ini adalah mengimplementasikan dan mengukur kemampuan dari beberapa 
+algoritma SOTA DRL dalam sebuah \emph{environment} yang memiliki skenario combat dan mekanisme
+sebuah \emph{hexagonal grid turn-based strategy game} yaitu Civ6.
 
 \section{Manfaat}
 \label{sec:manfaat}
 
-Hasil dari penelitian ini diharapkan dapat memberikan contoh implementasi dalam merancang sebuah agen AI menggunakan metode DRL kepada game developer atau game AI programmer untuk menghasilkan agen AI yang lebih optimal dalam sebuah hexagonal grid turn-based strategy game.
-
-% Format Buku TA baru, ga pake sistematika penulisan
-
-% \section{Sistematika Penulisan}
-% \label{sec:sistematikapenulisan}
-
-% Laporan penelitian tugas akhir ini terbagi menjadi \lipsum[1][1-3] yaitu:
-
-% \begin{enumerate}[nolistsep]
-
-%   \item \textbf{BAB I Pendahuluan}
-
-%   Bab ini berisi \lipsum[2][1-5]
-
-%   \vspace{2ex}
-
-%   \item \textbf{BAB II Tinjauan Pustaka}
-
-%   Bab ini berisi \lipsum[3][1-5]
-
-%   \vspace{2ex}
-
-%   \item \textbf{BAB III Desain dan Implementasi Sistem}
-
-%   Bab ini berisi \lipsum[4][1-5]
-
-%   \vspace{2ex}
-
-%   \item \textbf{BAB IV Pengujian dan Analisa}
-
-%   Bab ini berisi \lipsum[5][1-5]
-
-%   \vspace{2ex}
-
-%   \item \textbf{BAB V Penutup}
-
-%   Bab ini berisi \lipsum[6][1-5]
-
-% \end{enumerate}
+Hasil dari penelitian ini diharapkan dapat memberikan contoh implementasi dalam merancang 
+sebuah agen AI menggunakan metode DRL serta memberikan acuan performa beberapa algoritma SOTA DRL kepada game developer atau game AI programmer untuk 
+mengimplementasikan agen berbasis DRL dalam sebuah hexagonal grid turn-based strategy game.
