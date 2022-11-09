@@ -16,7 +16,7 @@
     Nama Mahasiswa    &:& Dafa Fidini Asqav \\
 
     % Ubah kalimat berikut dengan judul tugas akhir
-    Judul Tugas Akhir &:&	Implementasi Deep Reinforcement Learning Pada Hexagonal Grid Turn-Based Strategy Game \\
+    Judul Tugas Akhir &:&	Implementasi Deep Reinforcement Learning pada Hexagonal Grid Turn-Based Strategy Game \\
 
     % Ubah kalimat-kalimat berikut dengan nama-nama dosen pembimbing
     Pembimbing        &:& 1. Dr. Supeno Mardi Susiki Nugroho, S.T., M.T \\
@@ -25,7 +25,20 @@
 \endgroup
 
 % Ubah paragraf berikut dengan abstrak dari tugas akhir
-Pada penelitian ini kami mengajukan \lipsum[1]
+Game strategi merupakan permainan di mana pemain mengambil keputusan strategis di dalam game untuk menyelesaikan tujuan. 
+Salah satu game tersebut merupakan \emph{Civilization VI} (Civ6).
+Dalam game ini, pemain melakukan aksi bergilir dengan lawannya dalam area map yang tersusun dari lantai segi enam (\emph{hexagonal grid}).
+Civ6 merupakan game dengan aspek 4X (\emph{Exploration, exploitation, expansion, extermination}). Aspek aspek 4X tersebut menyebabkan game ini menjadi kompleks.
+Hal ini menjadi tantangan bagi \emph{game developer} untuk membuat lawan AI yang dapat memberikan tantangan yang cukup terhadap pemain. 
+Akan tetapi, game strategi seperti Civ6 masih memiliki kapabilitas agen berbasis AI yang belum optimal.
+Berkembangnya bidang \emph{Deep Reinforcement Learning} (DRL) menawarkan teknologi AI yang belum memungkinkan sebelumnya.
+Dalam penelitian ini, dirancanglah sebuah \emph{environment} yang mengikuti mekanisme \emph{combat} dalam Civ6
+sebagai media implementasi DRL. Terdapat dua agen dalam \emph{environment} ini: agen \emph{attacker} dan \emph{defender}.
+Kedua agen memiliki tujuan yang berbeda (\emph{asymmetrical}) dan saling berlawanan (\emph{adversarial}).
+Terdapat empat algoritma \emph{state of the art} (SOTA) yang digunakan dalam eksperimen penelitian ini:
+DQN, APE-X DQN, PPO, dan IMPALA. Dari hasil experimen, didapatkan bahwa APE-X DQN memiliki performa terbaik bagi agen \emph{attacker}
+dan agen \emph{defender}. Agen \emph{attacker} APE-X DQN mampu menghancurkan kota secara konsisten sebelum 2 juta \emph{environment steps}.
+Akan tetapi, APE-X DQN menggunakan CPU dan RAM lebih banyak dari algoritma lain, dengan penggunaan CPU sebanyak 79.95\% dan RAM sebanyak 82.3\%.
 
 % Ubah kata-kata berikut dengan kata kunci dari tugas akhir
-Kata Kunci: Roket, \emph{Anti-gravitasi}, Energi, Angkasa.
+Kata Kunci: \emph{Deep Reinforcement Learning, Artificial Intelligence, Machine Learning, Civilization VI, DQN, APE-X, PPO, IMPALA}

@@ -36,17 +36,6 @@ CS digunakan ketika \emph{unit} menyerang \emph{unit} lain secara dekat, RS digu
 \emph{Unit} dapat mendapatkan kembali HP yang hilang (\emph{healing}) dengan cara tidak menggunakan MP yang dimiliki selama gilirannya.
 \emph{Unit} yang melakukan \emph{healing} mendapatkan +10 HP per giliran.
 
-% input gambar
-\begin{figure}[H]
-  \centering
-    % Nama dari file gambar yang diinputkan
-    \includegraphics[scale=0.6]{gambar/hex_action.png}
-    % Keterangan gambar yang diinputkan
-    \caption{7 \emph{actions} yang dapat diambil oleh AI dalam \emph{Hexagonal tile}}
-    % Label referensi dari gambar yang diinputkan
-    \label{fig:hex_action}
-\end{figure}
-
 \emph{Unit} jarak dekat (\emph{melee unit})  mempunyai \emph{Zone of Control} (ZoC). ZoC berada di lantai diseluruh sisi sebelah dimana 
 \emph{unit} tersebut berada. Ketika sebuah unit memasuki ZoC milik unit lawan, unit tersebut tidak dapat bergerak ke lantai lain, namun
 unit tersebut dapat melakukan aksi seperti menyerang dan sebagainya.
@@ -175,17 +164,28 @@ Distributed Prioritized Experience Replay Deep Q-Networks (Ape-X DQN) merupakan 
 Dibandingkan dengan DQN biasanya, Ape-X DQN menggunakan banyak \emph{core} pada CPU sebagai \emph{actor} yang masing masing memiliki environment tersendiri.
 \emph{Actor} tersebut akan mengumpulkan \emph{experience} yang didapatkan ke sebuah GPU \emph{learner}. 
 \emph{Learner} tersebut akan mengambil sebuah sampel dengan metode \emph{prioritized experience} dan melakukan update pada \emph{neural network}. 
-Ape-X DQN ditemukan lebih efisien dan lebih baik daripada algoritma DQN lainnya dalam \emph{environment} game \emph{Atari} 2600 \citep{apexDQN}.
+APE-X DQN ditemukan lebih efisien dan lebih baik daripada algoritma DQN lainnya dalam \emph{environment} game \emph{Atari} 2600 \citep{apexDQN}.
 
 \begin{figure}[H]
   \centering
     % Nama dari file gambar yang diinputkan
     \includegraphics[scale=0.6]{gambar/apex1.png}
     % Keterangan gambar yang diinputkan
-    \caption{Arsitektur Ape-X dengan beberapa \emph{actor} dan menambahkan \emph{experiences} ke pada sebuah \emph{learner} \citep{apexDQN}.}
+    \caption{Arsitektur APE-X dengan beberapa \emph{actor} dan menambahkan \emph{experiences} ke pada sebuah \emph{learner} \citep{apexDQN}.}
     % Label referensi dari gambar yang diinputkan
     \label{fig:apexDQNArchitecture}
 \end{figure}
+
+APE-X DQN memiliki seuah fungsi \emph{loss} untuk menghitung seluruh elemen dari \emph{batch} sebagai berikut:
+\begin{equation}
+  l_{t} (\theta) = \frac{1}{2}\left(G_{t}-q\left(S_{t},A_{t},\theta\right)\right)^2
+\end{equation}
+dengan 
+\begin{equation}
+  G_{t} = R_{t+1} + \gamma R_{t+2} + \dots + \gamma ^{n-1}R_{t+n} + \gamma ^{n}q\left(S_{t+n}, \text{argmax} q\left(S_{t+n},a,\theta \right)\theta ^{-}\right)
+\end{equation}
+dimana $t$ merupakan indeks dari \emph{experience} yang diambil dari \emph{replay} dimulai dari \emph{state} $S_{t}$ dan \emph{action} $A_{t}$,
+dan $\theta^{-}$ menandakan parameter dari \emph{target network} \citep{apexDQN}.
 
 \section{Proximal Policy Optimization}
 
@@ -193,16 +193,37 @@ Ape-X DQN ditemukan lebih efisien dan lebih baik daripada algoritma DQN lainnya 
 Berbeda dengan \emph{Q-Learning}, \emph{policy gradient methods} bekerja dengan cara menghitung sebuah estimator dari \emph{policy gradient} dan memasukannya ke
 sebuah algoritma \emph{stochastic gradient ascent} \citep{ppo}. PPO mengoptimasi lebih lanjut dari mode \emph{Trust Region Policy Optimization} (TRPO).
 Jika biasanya metode \emph{policy-gradient} melakukan satu \emph{gradient update} setiap sampel, PPO melakukan beberapa \emph{epochs} dari \emph{minibatch updates}. 
-PPO memiliki beberapa keuntungan dari TRPO dengan implementasi yang lebih mudah, lebih baik dalam generalisasi, dan memiliki performa yang lebih baik dalam simulasi permainan game Atari dibandingkan dengan metode policy gradient yang lain
+PPO memiliki beberapa keuntungan dari TRPO dengan implementasi yang lebih mudah, lebih baik dalam generalisasi, 
+dan memiliki performa yang lebih baik dalam simulasi permainan game Atari dibandingkan dengan metode policy gradient yang lain.
+
+PPO melakukan optimasi \emph{trust region} dengan mengganti batasan dari \emph{penalty} dalam sebuah fungsi \emph{objective}:
+\begin{equation}
+  L^{KLPEN} (\theta) = \mathbb{\hat{E}}\left[\frac{\pi_{\theta} (a_{t} | s_{t})}{\pi_{\theta_{old}} (a_{t} | s_{t})}\right] \hat{A}_{t} - \beta KL \left[\pi_{\theta_{old}}(. | s_{t}), \pi \theta(. | s_{t})\right]
+\end{equation}
+$\beta$ mengurangi \emph{objective} ketika sebuah \emph{policy} baru berbeda dengan \emph{policy} lama.
+Jika \emph{KL-divergence} dari \emph{policy} baru dan lama lebih tinggi dari nilai target,
+nilai $\beta$ akan dikurangi. Sebaliknya, jika nilai tersebut dibawah nilai target, maka nilai $\beta$ akan bertambah.
+
+Pendekatan lain adalah menggunakan \emph{clipped surrogate objective}:
+\begin{equation}
+  L^{CLIP} (\theta) = \mathbb{\hat{E}}_{t}\left[\text{min}(r_{t}{\theta}\hat{A}_{t},\text{clip}(r_{t}(\theta),1-\epsilon,1+\epsilon)\hat{A}_{t})\right]
+\end{equation}
+dimana \emph{epsilon} adalah \emph{hyperparameter}. 
+Saat rasio probabilitas dari \emph{policy} lama dan baru berada di luar ($1-\epsilon$) dan ($1+\epsilon$),
+fungsi \emph{advantage} akan dipotong nilainya (\emph{clipped}). 
+Dengan memotong nilai advantage, perubahan \emph{policy} yang diluar set \emph{hyperparameter} akan tidak sering terjadi, 
+menjadikan proses \emph{update} lebih stabil.
 
 \begin{figure}[H]
   \centering
     % Nama dari file gambar yang diinputkan
-    \includegraphics[scale=0.6]{gambar/ppo_model.png}
+    \includegraphics[scale=0.6]{gambar/ppo_clipped.png}
     % Keterangan gambar yang diinputkan
-    \caption{Arsitektur algoritma PPO}
+    \caption{Plot menunjugan sebuah timestep dari fungsi \emph{surrogate} $L^{CLIP}$
+    sebagai fungsi rasio probabilitas. \emph{Advantage} positif (kiri) dan \emph{advantage} negatif (kanan).
+    Lingkaran merah menunjukan titik awal untuk optimasi.}
     % Label referensi dari gambar yang diinputkan
-    \label{fig:ppoArchitecture}
+    \label{fig:ppoClippedPlot}
 \end{figure}
 
 \section{Importance Weighted Actor-Learner Architecture (IMPALA)}
@@ -210,7 +231,19 @@ PPO memiliki beberapa keuntungan dari TRPO dengan implementasi yang lebih mudah,
 IMPALA merupakan sebuah \emph{framework} \emph{actor-critic} yang memisahkan antara acting dengan learning.
 IMPALA menggunakan \emph{V-trace} dimana \emph{learner} mempelajari \emph{experience trajectory}.
 GPU \emph{learner} pusat melakukan \emph{stochastic gradient descent} (SGD) pada sebuah \emph{tight loop} saat mengambil sampel 
-\emph{batches} dari proses CPU \emph{actor} secara sinkronus \citep{impala}.
+\emph{batches} dari proses CPU \emph{actor} secara asinkronus \citep{impala}.
+
+\emph{V-trace} merupakan sebuah algoritma RL \emph{off-policy actor-critic} yang mengurangi \emph{lag} dari \emph{actions} yang dibuat oleh \emph{actors}
+dan saat \emph{learner} melakukan estimasi \emph{gradient}. 
+Pada sebuah \emph{trajectory} $(x_{t}, a_{t}, r_{t})^{t=s+n}_{t=s}$ yang dibuat oleh \emph{actor} yang mengikut sebuah \emph{policy} $\mu$.
+Target \emph{V-trace} pada \emph{$n$-steps} untuk $V(x_{s})$, dnegan nilai perkiraan pada \emph{state} $x_{s}$ di definisikan sebagai:
+\begin{equation}
+  v_{s} \stackrel{\text{def}}{=} V(x_{s}) + \sum^{s+n-1}_{t=s} \gamma^{t-s} \left(\Pi^{t-1}_{i=s}ci\right) \delta_{t}V
+\end{equation}
+dimana $\delta_{t}V \stackrel{\text{def}}{=} \rho_{t}\left(r_{t} + \gamma V(x_{t+1}) - V(x_{t})\right)$ merupakan perbedaan temporal untuk $V$,
+dan $\rho_{t} \stackrel{\text{def}}{=} \text{min}\left(\overline{\rho}, \frac{\pi (a_{t}|x_{t})}{\mu (a_{t}|x_{t})}\right)$ dan 
+$c_{i} \stackrel{\text{def}}{=} \text{min}\left(\overline{c}, \frac{\pi (a_{t}|x_{t})}{\mu (a_{t}|x_{t})}\right)$ adalah \emph{truncated importance sampling weight}.
+Diasumsikan juga bahwa nilai \emph{truncation levels} adalah $\overline{\rho} \geq \overline{c}$ \citep{impala}.
 
 Arsitektur IMPALA dapat mencapai \emph{throughput} yang tinggi, namun \emph{policy} yang digunakan untuk menghasilkan \emph{trajectory} terlambat selama beberapa \emph{update} jika dibandingkan dengan \emph{policy} yang ada pada \emph{learner} pada saat perhitungan gradien.
 Oleh karena itu, IMPALA menggunakan \emph{V-trace off policy actor critic}
@@ -222,7 +255,7 @@ Oleh karena itu, IMPALA menggunakan \emph{V-trace off policy actor critic}
     % Keterangan gambar yang diinputkan
     \caption{Kiri: Sebuah learner. Setiap \emph{actor} menghasilkan \emph{trajectories} dan mengirimkannya melalui sebuah \emph{queue} kepada \emph{learner}.
     Sebelum memulai \emph{trajectory} selanjutnya, \emph{actor} menerima \emph{policy parameters} terbaru dari \emph{learner}.
-    Kanan: Banyak \emph{learner}. \emph{Policy parameters} didistribusikan kepada lebih dari satu \emph{learner} yang bekerja secara sinkron \citep{impala}.}
+    Kanan: Banyak \emph{learner}. \emph{Policy parameters} didistribusikan kepada lebih dari satu \emph{learner} yang bekerja secara sinkronus \citep{impala}.}
     % Label referensi dari gambar yang diinputkan
     \label{fig:impalaSingleVsMultipleLearner}
 \end{figure}
@@ -273,3 +306,10 @@ PettingZoo memiliki API yang mirip dengan Gym. Kemiripan API ini memudahkan peng
   observation, rewards, dones,
   infos = env.step(actions)
 \end{lstlisting}
+
+\section{RLlib}
+RLlib adalah sebuah \emph{library} RL yang merupakan bagian dari \emph{open source Ray project} yang menawarkan
+algoritma RL berskala dan performa tinggi untuk komputasi terdistribusi \citep{rllib}.
+RLlib menawarkan beberapa koleksi dan referensi algoritma dan juga abstraksi \emph{scalable} untuk memudahkan
+pembuatan algoritma baru. RLlib mendukung beberapa \emph{library} \emph{environment} seperti \emph{OpenAI Gym},
+\emph{PettingZoo}, dan juga simulator eksternal seperti \emph{Unity3D} atau \emph{game engine} lainnya.

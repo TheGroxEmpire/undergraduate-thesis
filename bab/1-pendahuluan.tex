@@ -6,15 +6,19 @@
 \section{Latar Belakang}
 \label{sec:latarbelakang}
 
-Game strategi merupakan permainan di mana pemain mengambil keputusan strategis di dalam game untuk menyelesaikan tujuan dalam game tersebut. Salah satu game tersebut merupakan seri \emph{Civilization}. 
-\emph{Civilization VI} (Civ6) merupakan instalasi terbaru dari seri game ini. Civ6 adalah game strategi berbasis giliran (\emph{Turn-based strategy game}) terpopuler. 
-Dalam game ini, Pemain melakukan aksi bergilir dengan lawannya. Pemain dapat mempunyai lawan berupa manusia lain maupun sebuah agen berbasis \emph{artificial intelligence} (AI).
+Game strategi merupakan permainan di mana pemain mengambil keputusan strategis di dalam game untuk menyelesaikan tujuan. 
+Salah satu game tersebut merupakan seri \emph{Civilization}. 
+\emph{Civilization VI} (Civ6) merupakan instalasi terbaru dari seri game ini. 
+Civ6 adalah game strategi berbasis giliran (\emph{Turn-based strategy game}) terpopuler. 
+Dalam game ini, pemain melakukan aksi bergilir dengan lawannya dalam area map yang tersusun dari lantai segi enam (\emph{hexagonal grid}).
+Pemain dapat mempunyai lawan berupa manusia lain maupun sebuah agen berbasis \emph{artificial intelligence} (AI).
 
 Civ6 merupakan game 4X (\emph{Explore, Expand, Exploit, Exterminate}). Dalam game ini, pemain dapat memilih negara-negara yang telah muncul dalam sejarah. 
 Pemain memiliki tujuan untuk menjelajah area di dalam game yang telah dibuat secara acak (\emph{Explore}), memperluas teritori milik pemain (\emph{Expand}), memanfaatkan teritori yang dimiliki (\emph{Exploit}), dan menghancurkan teritori milik lawan (\emph{Exterminate}). 
-Aspek-aspek 4X tersebut menyebabkan game ini menjadi sangat kompleks. Pemain memiliki opsi yang banyak dalam memainkan game ini dibandingkan jenis game lainnya.
-Hal ini menjadi tantangan bagi game developer untuk membuat lawan AI yang dapat memberikan tantangan yang cukup terhadap pemain dalam lingkungan game yang kompleks seperti ini. 
-Akan tetapi, game strategi 4X seperti Civ6 masih memiliki kapabilitas agen berbasis AI yang belum optimal. 
+Aspek-aspek 4X tersebut menyebabkan game ini menjadi sangat kompleks. 
+Lingkungan kompleks dalam \emph{Civilization} memberikan banyak kemungkinan dalam \emph{action space} dan \emph{state space} yang luas \citep{civ4City}.
+Hal ini menjadi tantangan bagi \emph{game developer} untuk membuat lawan AI yang dapat memberikan tantangan yang cukup terhadap pemain dalam lingkungan game yang kompleks seperti ini. 
+Akan tetapi, game strategi 4X seperti Civ6 masih memiliki kapabilitas agen berbasis AI yang belum optimal.
 
 \begin{figure}[H]
     \centering
@@ -28,6 +32,7 @@ Akan tetapi, game strategi 4X seperti Civ6 masih memiliki kapabilitas agen berba
 
 Dengan mengintegrasikan teknik-teknik \emph{machine learning}, AI memiliki potensial untuk bertindak seperti kemampuan manusia \citep{humanLevelAI}.
 Berkembangnya bidang \emph{Deep Reinforcement Learning} menawarkan teknologi AI yang belum memungkinkan sebelumnya. 
+DRL telah digunakan untuk membuat agen AI yang mampu bermain dalam game yang kompleks dan sulit seperti Atari 2600, Dota 2, dan Starcraft 2 \citep{DRLSurvey}.
 
 \section{Permasalahan}
 \label{sec:permasalahan}
@@ -50,11 +55,11 @@ Diperlukanlah sebuah teknik maupun teknologi AI baru untuk mengatasi masalah ini
 \section{Batasan Masalah}
 \label{sec:batasanmasalah}
 
-Penelitian ini mencakup pada implementasi beberapa algoritma \emph{state-of-the-art} (SOTA) DRL dalam sebuah \emph{custom environment}. 
+Penelitian ini mencakup pada implementasi beberapa algoritma \emph{state of the art} (SOTA) DRL dalam sebuah \emph{environment}. 
 Mekanisme \emph{environment} mengikuti mekanisme \emph{combat} dalam game Civ6 yang merupakan \emph{hexagonal grid turn-based strategy game} terpopuler saat penelitian ini ditulis. 
 Luas \emph{environment} sebesar 8 x 8. Di tengah \emph{environment} terdapat sebuah kota yang dapat direbut oleh agen AI. Terdapat dua agen dalam penelitian ini, yaitu agen \emph{attacker} dan agen \emph{defender}. 
 Jenis unit yang digunakan oleh agen AI berupa unit jarak dekat (\emph{warrior}) dan unit jarak jauh (\emph{slinger}). Kedua unit tersebut merupakan unit paling awal yang digunakan dalam Civ6.
-Sebuah game penuh berbasis DRL berada di luar batasan penelitian ini. Namun, \emph{custom environment} yang digunakan sebagai prototipe akan menjadi \emph{proof of concept}
+Sebuah game penuh berbasis DRL berada di luar batasan penelitian ini. Namun, \emph{environment} yang digunakan sebagai prototipe akan menjadi \emph{proof of concept}
 akan kapabilitas DRL dalam \emph{hexagonal grid turn-based strategy game}.
 
 \section{Tujuan}
