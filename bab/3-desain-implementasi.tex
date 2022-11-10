@@ -190,33 +190,317 @@ agen \emph{attacker} mati. Tidak diberikan penalti pada agen \emph{defender} ket
 hal tersebut membuat agen \emph{defender} terlalu pasif. Kedua agen akan mendapatkan penalti ketika mencoba untuk menggerakan \emph{unit}
 milik mereka keluar dari batas \emph{environment}.
 
+\section{Implementasi Algoritma DRL}
+Implementasi algoritma dalam penelitian ini menggunakan RLlib versi 2.0.0.
+Kami menggunakan RLlib dengan alasan bahwa algoritma yang diimplementasikan dalam \emph{library} ini
+sudah diverifikasi oleh berbagai pihak, sehingga menghindari adanya \emph{bug} pada implementasi manual.
+Alasan kedua adalah kemampuan RLlib untuk diintegrasikan dengan simulator eksternal seperti Unity3D
+dan \emph{game engine} lainnya \citep{rllibDocumentation}.
+Mengingat bahwa manfaat dari penelitian ini adalah memberi contoh implementasi DRL
+bagi \emph{game developer}.
+Reproduksi akan hasil eksperimen dari penelitian juga akan dipermudah dengan 
+menggunakan sebuah \emph{open source library} RL seperti RLlib.
+Terdapat 4 algoritma SOTA DRL yang diimplementasikan dalam \emph{environment} dalam
+eksperimen penelitian ini: DQN, APE-X DQN, PPO, IMPALA. 
+Algoritma-algoritma tersebut dipilih karena mencakup beberapa bidang dari DRL seperti
+on-policy, off-policy, dan distributed learning.
+\emph{Hyperparameter} dari algoritma-algoritma tersebut mengikuti \emph{hyperparameter}
+dasar yang diberikan secara \emph{default} oleh RLlib 2.0.0 dengan beberapa pengecualian:
+\begin{itemize}
+  \item num\_rollout\_workers: Mengatur akan jumlah instansi parallel training yang berjalan.
+  angka 3 dipilih karena APE-X DQN menggunakan 2 CPU core setiap pada \emph{rollout\_workers}
+  dan 2 core dasar. Dengan 3 \emph{rollout\_workers}, APE-X menggunakan seluruh 8 core dari i7 9700K
+  secara penuh.
 
-% % Per blok diagram dijelaskan dan dibuatkan section masing-masing
+  \item multi\_agent: untuk membedakan \emph{policy}
+  yang digunakan oleh agen \emph{attacker} dan \emph{defender}
 
-% % \section{Blok Diagram}
-% % \label{sec:blokdiagram}
+  \item num\_env\_steps\_sampled: jumlah \emph{environment steps} yang dilakukan sebelum training selesai.
+  Dipilih angka 10 juta karena jika melampaui angka ini, APE-X DQN akan menghabiskan lebih dari 32GB RAM.
+  Kapasitas RAM yang terdapat pada spesifikasi hanya 32GB.
+  
+  \item num\_gpus: Digunakan satu GPU dalam training.
+\end{itemize}
 
-% % Contoh pembuatan potongan kode
-% \begin{lstlisting}[
-%   language=C++,
-%   caption={Program halo dunia.},
-%   label={lst:halodunia}
-% ]
-% #include <iostream>
+\begin{lstlisting}[
+  language=Python,
+  caption={Cuplikan kode setting config (hyperparameter)},
+  label={lst:customHyperparameter}
+]
+config.multi_agent(
 
-% int main() {
-%     std::cout << "Halo Dunia!";
-%     return 0;
-% }
-% \end{lstlisting}
+  policies={pid: (None, obs_space, act_space, {}) for pid in
 
-% \lipsum[2-3]
+            test_env.env.agents},
 
-% % Contoh input potongan kode dari file
-% \lstinputlisting[
-%   language=Python,
-%   caption={Program perhitungan bilangan prima.},
-%   label={lst:bilanganprima}
-% ]{program/bilangan-prima.py}
+  policy_mapping_fn=(lambda agent_id, episode, **kwargs: agent_id),
 
-% \lipsum[4]
+  )  
+
+config.num_gpus = 1
+config.rollouts(num_rollout_workers=3)
+    
+\end{lstlisting}
+
+Selain \emph{hyperparameter} yang sama (\emph{common-configs}), setiap algoritma memiliki \emph{hyperparameter}
+tersendiri yang khusus untuk algoritma tersebut (\emph{specific-configs}).
+
+\subsection{Implementasi DQN}
+DQN yang digunakan dalam implementasi RLlib secara default adalah \emph{Double Dueling} DQN
+dengan PER.
+
+\begin{figure}[H]
+  \centering
+    % Nama dari file gambar yang diinputkan
+    \includegraphics[scale=0.6]{gambar/rllib_dqn_architecture.png}
+    % Keterangan gambar yang diinputkan
+    \caption{Arsitektur DQN pada RLlib 2.0.0 \citep{rllibDocumentation}}
+    % Label referensi dari gambar yang diinputkan
+    \label{fig:rllib_dqn_architecture}
+\end{figure}
+
+\begin{lstlisting}[
+  language=Python,
+  caption={DQN-specific configs},
+  label={lst:dqnSpecificConfigs}
+]
+self.num_atoms = 1
+self.v_min = -10.0
+self.v_max = 10.0
+self.noisy = False
+self.sigma0 = 0.5
+self.dueling = True
+self.hiddens = [256]
+self.double_q = True
+self.n_step = 1
+self.before_learn_on_batch = None
+self.training_intensity = None
+self.td_error_loss_fn = "huber"
+self.categorical_distribution_temperature = 1.0
+
+# Changes to SimpleQConfig's default:
+self.replay_buffer_config = {
+    "type": "MultiAgentPrioritizedReplayBuffer",
+    # Specify prioritized replay by supplying a buffer type that supports
+    # prioritization, for example: MultiAgentPrioritizedReplayBuffer.
+    "prioritized_replay": DEPRECATED_VALUE,
+    # Size of the replay buffer. Note that if async_updates is set,
+    # then each worker will have a replay buffer of this size.
+    "capacity": 50000,
+    "prioritized_replay_alpha": 0.6,
+    # Beta parameter for sampling from prioritized replay buffer.
+    "prioritized_replay_beta": 0.4,
+    # Epsilon to add to the TD errors when updating priorities.
+    "prioritized_replay_eps": 1e-6,
+    # The number of continuous environment steps to replay at once. This may
+    # be set to greater than 1 to support recurrent models.
+    "replay_sequence_length": 1,
+    # Whether to compute priorities on workers.
+    "worker_side_prioritization": False,
+}
+# fmt: on
+\end{lstlisting}
+
+\subsection{Implementasi APE-X DQN}
+Implementasi APE-X DQN dalam RLlib 2.0.0 menggunakan implementasi DQN yang ada dengan
+tambahan \emph{distributed prioritezed experience replay} (APE-X) untuk skalabilitas
+yang mencapai ratusan CPU dengan satu GPU \emph{learner}. Pada \emph{specific-configs}
+yang digunakan oleh APE-X DQN, digunakan 32 \emph{rollout\_workers}. Setting \emph{rollout\_workers}
+tersebut terganti oleh 3 \emph{rollout\_workers} yang dideklarasikan pada \ref{lst:customHyperparameter}.
+
+\begin{figure}[H]
+  \centering
+    % Nama dari file gambar yang diinputkan
+    \includegraphics[scale=0.6]{gambar/rllib_apex-dqn_architecture.png}
+    % Keterangan gambar yang diinputkan
+    \caption{Arsitektur APE-X DQN pada RLlib 2.0.0 \citep{rllibDocumentation}}
+    % Label referensi dari gambar yang diinputkan
+    \label{fig:rllib_apex-dqn_architecture}
+\end{figure}
+
+\begin{lstlisting}[
+  language=Python,
+  caption={Cuplikan kode setting config (hyperparameter)},
+  label={lst:apexDqnSpecificConfigs}
+]
+# APEX-DQN settings overriding DQN ones:
+# .training()
+self.optimizer = merge_dicts(
+    DQNConfig().optimizer, {
+        "max_weight_sync_delay": 400,
+        "num_replay_buffer_shards": 4,
+        "debug": False
+    })
+self.n_step = 3
+self.train_batch_size = 512
+self.target_network_update_freq = 500000
+self.training_intensity = 1
+# Number of timesteps to collect from rollout workers before we start
+# sampling from replay buffers for learning. Whether we count this in agent
+# steps  or environment steps depends on config["multiagent"]["count_steps_by"].
+self.num_steps_sampled_before_learning_starts = 50000
+
+# max number of inflight requests to each sampling worker
+# see the AsyncRequestsManager class for more details
+# Tuning these values is important when running experimens with large sample
+# batches. If the sample batches are large in size, then there is the risk that
+# the object store may fill up, causing the store to spill objects to disk.
+# This can cause any asynchronous requests to become very slow, making your
+# experiment run slowly. You can inspect the object store during your
+# experiment via a call to ray memory on your headnode, and by using the ray
+# dashboard. If you're seeing that the object store is filling up, turn down
+# the number of remote requests in flight, or enable compression in your
+# experiment of timesteps.
+self.max_requests_in_flight_per_sampler_worker = 2
+self.max_requests_in_flight_per_replay_worker = float("inf")
+self.timeout_s_sampler_manager = 0.0
+self.timeout_s_replay_manager = 0.0
+# APEX-DQN is using a distributed (non local) replay buffer.
+self.replay_buffer_config = {
+    "no_local_replay_buffer": True,
+    # Specify prioritized replay by supplying a buffer type that supports
+    # prioritization
+    "type": "MultiAgentPrioritizedReplayBuffer",
+    "capacity": 2000000,
+    # Alpha parameter for prioritized replay buffer.
+    "prioritized_replay_alpha": 0.6,
+    # Beta parameter for sampling from prioritized replay buffer.
+    "prioritized_replay_beta": 0.4,
+    # Epsilon to add to the TD errors when updating priorities.
+    "prioritized_replay_eps": 1e-6,
+    # Whether all shards of the replay buffer must be co-located
+    # with the learner process (running the execution plan).
+    # This is preferred b/c the learner process should have quick
+    # access to the data from the buffer shards, avoiding network
+    # traffic each time samples from the buffer(s) are drawn.
+    # Set this to False for relaxing this constraint and allowing
+    # replay shards to be created on node(s) other than the one
+    # on which the learner is located.
+    "replay_buffer_shards_colocated_with_driver": True,
+    "worker_side_prioritization": True,
+    # Deprecated key.
+    "prioritized_replay": DEPRECATED_VALUE,
+}
+
+# .rollouts()
+self.num_workers = 32
+self.rollout_fragment_length = 50
+self.exploration_config = {
+    "type": "PerWorkerEpsilonGreedy",
+}
+
+# .resources()
+self.num_gpus = 1
+
+# .reporting()
+self.min_time_s_per_iteration = 30
+self.min_sample_timesteps_per_iteration = 25000
+
+# fmt: on
+\end{lstlisting}
+
+\subsection{Implementasi PPO}
+Implementasi PPO dari RLlib 2.0.0 menggunakan \emph{clipped objective} dan \emph{KL-penalty}.
+Multi-GPU \emph{optimizer} RLlib meletakkan data di GPU memori untuk menghindari transfer yang tidak diperlukan
+dari \emph{host memory}, sehingga performa lebih baik dari implementasi secara \emph{naive}.
+
+\begin{figure}[H]
+  \centering
+    % Nama dari file gambar yang diinputkan
+    \includegraphics[scale=0.6]{gambar/rllib_ppo_architecture.png}
+    % Keterangan gambar yang diinputkan
+    \caption{Arsitektur PPO pada RLlib 2.0.0 \citep{rllibDocumentation}}
+    % Label referensi dari gambar yang diinputkan
+    \label{fig:rllib_ppo_architecture}
+\end{figure}
+
+\begin{lstlisting}[
+  language=Python,
+  caption={PPO-specific configs},
+  label={lst:ppoSpecificConfigs}
+]
+# PPO specific settings:
+self.lr_schedule = None
+self.use_critic = True
+self.use_gae = True
+self.lambda_ = 1.0
+self.kl_coeff = 0.2
+self.sgd_minibatch_size = 128
+self.num_sgd_iter = 30
+self.shuffle_sequences = True
+self.vf_loss_coeff = 1.0
+self.entropy_coeff = 0.0
+self.entropy_coeff_schedule = None
+self.clip_param = 0.3
+self.vf_clip_param = 10.0
+self.grad_clip = None
+self.kl_target = 0.01
+
+# Override some of AlgorithmConfig's default values with PPO-specific values.
+self.rollout_fragment_length = 200
+self.train_batch_size = 4000
+self.lr = 5e-5
+self.model["vf_share_layers"] = False
+    
+\end{lstlisting}
+
+\subsection{Implementasi IMPALA}
+Implementasi IMPALA dari RLlib 2.0.0 menggunakan referensi kode V-trace milik DeepMind \citep{impala}.
+
+\begin{figure}[H]
+  \centering
+    % Nama dari file gambar yang diinputkan
+    \includegraphics[scale=0.6]{gambar/rllib_impala_architecture.png}
+    % Keterangan gambar yang diinputkan
+    \caption{Arsitektur IMPALA pada RLlib 2.0.0 \citep{rllibDocumentation}}
+    % Label referensi dari gambar yang diinputkan
+    \label{fig:rllib_impala_architecture}
+\end{figure}
+
+\begin{lstlisting}[
+  language=Python,
+  caption={IMPALA-specific configs},
+  label={lst:impalaSpecificConfigs}
+]
+# IMPALA specific settings:
+self.vtrace = True
+self.vtrace_clip_rho_threshold = 1.0
+self.vtrace_clip_pg_rho_threshold = 1.0
+self.vtrace_drop_last_ts = True
+self.num_multi_gpu_tower_stacks = 1
+self.minibatch_buffer_size = 1
+self.num_sgd_iter = 1
+self.replay_proportion = 0.0
+self.replay_ratio = ((1 / self.replay_proportion)
+                     if self.replay_proportion > 0 else 0.0)
+self.replay_buffer_num_slots = 0
+self.learner_queue_size = 16
+self.learner_queue_timeout = 300
+self.max_requests_in_flight_per_sampler_worker = 2
+self.max_requests_in_flight_per_aggregator_worker = 2
+self.timeout_s_sampler_manager = 0.0
+self.timeout_s_aggregator_manager = 0.0
+self.broadcast_interval = 1
+self.num_aggregation_workers = 0
+self.grad_clip = 40.0
+self.opt_type = "adam"
+self.lr_schedule = None
+self.decay = 0.99
+self.momentum = 0.0
+self.epsilon = 0.1
+self.vf_loss_coeff = 0.5
+self.entropy_coeff = 0.01
+self.entropy_coeff_schedule = None
+self._separate_vf_optimizer = False
+self._lr_vf = 0.0005
+self.after_train_step = None
+
+# Override some of AlgorithmConfig's default values with ARS-specific values.
+self.rollout_fragment_length = 50
+self.train_batch_size = 500
+self.num_workers = 2
+self.num_gpus = 1
+self.lr = 0.0005
+self.min_time_s_per_iteration = 10
+    
+\end{lstlisting}
