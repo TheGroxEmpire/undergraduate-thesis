@@ -446,6 +446,8 @@ self.model["vf_share_layers"] = False
 
 \subsection{Implementasi IMPALA}
 Implementasi IMPALA dari RLlib 2.0.0 menggunakan referensi kode V-trace milik DeepMind \citep{impala}.
+Seperti APE-X DQN, IMPALA merupakan sebuah arsitektur terdistribusi. Arsitektur IMPALA juga mirip dengan PPO.
+Akan tetapi, PPO menggunakan \emph{synchronous broadcast}, sedangkan IMPALA menggunakan \emph{asynchronous broadcast}.
 
 \begin{figure}[H]
   \centering

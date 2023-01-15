@@ -18,7 +18,30 @@ Metode Reinforcement Learning yang digunakan oleh C. Amato dan G. Shani \citep{c
 
 A. Sestini, et al \citep{deepCrawl} mengembangkan sebuah game bernama DeepCrawl yang menggunakan Deep Reinforcement Learning (DRL) sebagai metode untuk mengembangkan AI dalam game tersebut. AI yang dilatih dalam penelitian ini dapat memberikan tantangan yang cukup bagi banyak pemain.[5] Penggunaan DRL seperti yang digunakan oleh A. Sestini, et al pada game DeepCrawl merupakan metode yang paling optimal dalam game strategi. Penggunaan Neural Network (NN) dapat diskala untuk area game yang besar. Namun, DeepCrawl merupakan jenis game Roguelike yang sangat berbeda dan minim dibandingkan dengan game strategi 4X.
 
-\section{Dasar Mekanisme dalam Combat Civilization VI}
+\section{Seri Game Civilization}
+\emph{Civilization} merupakan seri \emph{turn-based strategy games} yang dirilis pada 1991. 
+Game dari seri \emph{Civilization} telah menjual lebih dari 51 juta eksemplar \citep{civ6CopiesSold}.
+Civilization juga biasa dikenal sebagai game 4X,
+dimana pemain melakukan empat hal utama: \emph{explore}, \emph{expand}, \emph{exploit}, dan \emph{exterminate}. Secara makro, seluruh game
+dalam seri \emph{Civilization} memiliki tema yang sama. Pemain dapat membangun, menggerakan \emph{unit}, dan melakukan negosiasi dengan pemain lain
+berupa manusia maupun AI.
+
+\begin{figure}[H]
+  \centering
+    % Nama dari file gambar yang diinputkan
+    \includegraphics[scale=1]{gambar/Civ_1_negotiation.png}
+    % Keterangan gambar yang diinputkan
+    \caption{Layar negosiasi dalam \emph{Civilization} I.}
+    % Label referensi dari gambar yang diinputkan
+    \label{fig:civ1Negotiation}
+\end{figure}
+
+\emph{Civilization V} (Civ5) merupakan game pertama dalam seri ini untuk menggunakan \emph{hexagonal tile},
+berbeda dengan game-game sebelumnya yang menggunakan \emph{square tile}. Civ5 juga membatasi posisi unit dengan peraturan \emph{one-unit-per-tile}
+(1-UPT), dimana sebuah \emph{tile} hanya boleh ditempati oleh sebuah \emph{unit}.
+Civ6 adalah game terbaru dalam seri ini. 
+
+\section{Dasar Mekanisme Combat dalam Civilization VI}
 Civ6 menggunakan \emph{hexagonal grid} yang terdiri dari \emph{hex tiles}, atau \emph{hexes}, sebagai basis pergerakan dan peletakan \emph{unit}. 
 \emph{Unit} dapat bergerak ke enam arah menuju \emph{hexes} yang terdekat. Setiap \emph{unit} memiliki \emph{movement point} (MP). 
 MP menentukan seberapa jauh \emph{unit} dapat bergerak atau melakukan aksi dalam satu giliran. 
