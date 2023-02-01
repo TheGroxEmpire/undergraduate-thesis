@@ -12,17 +12,41 @@ serta evaluasi performa algoritma dalam skenario \emph{environment} yang berbeda
 
 \section{Hasil Training}
 
-Dalam eksperimen RL, hal yang paling penting untuk diperhatikan adalah rerata \emph{rewards} (\emph{mean episode rewards}) yang didapatkan oleh agen
+Dalam eksperimen RL, hal yang paling penting untuk diperhatikan adalah nilai \emph{rewards} (\emph{episode rewards}) yang didapatkan oleh agen
 selama training. Performa agen RL dapat diukur dengan seberapa banyak reward yang telah didapatkan oleh agen.
-Dari eksperimen yang telah dilakukan, didapatkan \emph{mean episode rewards} untuk kedua agen dengan keempat algoritma yang diuji coba.
+Dari eksperimen yang telah dilakukan, didapatkan beberapa nilai \emph{rewards}, 
+seperti \emph{mean episode rewards}, \emph{max episode rewards}, dan \emph{min episode rewards} untuk kedua agen dengan keempat algoritma yang diuji coba.
 \emph{Mean episode rewards} merupakan rerata nilai \emph{rewards} yang didapatkan oleh agen selama satu episode.
+
+Nilai \emph{mean episode rewards} menunjukan akan performa kedua agen saat training.
+Agen \emph{attacker} yang berhasil mencapai nilai \emph{atttacker mean episode reward} sebesar 20 poin atau ke atas
+merupakan agen attacker yang dapat secara konsisten menyelesaikan tujuannya, yaitu menghancurkan kota.
+Hal ini karena \emph{reward} yang didapatkan oleh agen \emph{attacker} dalam menghancurkan kota adalah 20 poin.
+
+Nilai \emph{max episode rewards} merupakan nilai tertinggi yang didapatkan oleh agen selama training berlangsung.
+Sebaliknya, nilai \emph{min episode rewards} merupakan nilai terendah yang didapatkan oleh agen selama training.
+
+
+\begin{table}[h]
+  \centering
+  \label{table:meanEpisodeReward}
+  \caption{Tabel nilai akhir \emph{mean episode rewards} kedua agen}
+  \begin{tabular}{|c|c|c|}
+  \hline
+  \textbf{Algorithm} & \textbf{\begin{tabular}[c]{@{}c@{}}Attacker Mean\\ Episode Reward\end{tabular}} & \textbf{\begin{tabular}[c]{@{}c@{}}Defender Mean\\ Episode Reward\end{tabular}} \\ \hline
+  APE-X DQN           & 20.62                                                                           & 2.36                                                                            \\ \hline
+  DQN                & 2.05                                                                            & 0.71                                                                            \\ \hline
+  PPO                & -3.2                                                                            & -1.9                                                                            \\ \hline
+  IMPALA             & 1.041                                                                           & 2.24                                                                            \\ \hline
+  \end{tabular}
+\end{table}
 
 \subsection{Attacker Mean Episode Rewards}
 
 \begin{figure}[H]
   \centering
     % Nama dari file gambar yang diinputkan
-    \includegraphics[scale=0.52]{gambar/attacker_reward_mean.jpg}
+    \includegraphics[scale=0.9]{gambar/attacker_reward_mean.jpg}
     % Keterangan gambar yang diinputkan
     \caption{Grafik menunjukan \emph{mean episode rewards} dari agen \emph{attacker}.
     Biru: APE-X DQN, oranye: DQN, hijau: IMPALA, merah: PPO}
@@ -51,7 +75,7 @@ dari batas \emph{environment} secara terus menerus.
 \begin{figure}[H]
   \centering
     % Nama dari file gambar yang diinputkan
-    \includegraphics[scale=0.52]{gambar/defender_reward_mean.jpg}
+    \includegraphics[scale=0.9]{gambar/defender_reward_mean.jpg}
     % Keterangan gambar yang diinputkan
     \caption{Grafik menunjukan \emph{mean episode rewards} dari agen \emph{defender}.
     Biru: APE-X DQN, oranye: DQN, hijau: IMPALA, merah: PPO}
@@ -70,6 +94,66 @@ APE-X DQN juga salah satu algoritma dengan performa terbaik, bersebelahan dengan
 DQN tidak berhasil melakukan konvergensi dengan baik dan nilainya tidak stabil sampai akhir sesi.
 PPO juga merupakan algoritma terburuk pada grafik ini. Keadaan \emph{flatline} sama yang dialami PPO pada grafik
 \ref{fig:attackerMeanEpisodeGraph} juga dapat dilihat disini.
+
+\subsection{Attacker Min dan Max Episode Rewards}
+\begin{table}[H]
+  \centering
+  \caption{Tabel nilai min dan max \emph{episode rewards} agen \emph{attacker}}
+  \label{table:attackerMinMaxRewards}
+  \begin{tabular}{|c|c|c|}
+  \hline
+  \textbf{Algorithm} & \textbf{\begin{tabular}[c]{@{}c@{}}Attacker Min\\ Episode Reward\end{tabular}} & \textbf{\begin{tabular}[c]{@{}c@{}}Attacker Max\\ Episode Reward\end{tabular}} \\ \hline
+  APE-X DQN           & -0.9                                                                           & 30                                                                             \\ \hline
+  DQN                & -15.4                                                                          & 25.2                                                                           \\ \hline
+  PPO                & 0                                                                              & 2.8                                                                            \\ \hline
+  IMPALA             & -26.2                                                                          & 14                                                                             \\ \hline
+  \end{tabular}
+\end{table}
+
+Dari nilai \emph{max episode rewards} APE-X DQN merupakan algoritma tertinggi paka 30 poin.
+Diikuti oleh DQN pada 25.2 poin.
+Kedua algoritma ini berada di atas 20 poin, yang berarti bahwa agen \emph{attacker} pada algoritma tersebut
+berhasil menghancurkan kota dalam salah satu episodenya.
+30 poin pada APE-X DQN menunjukan bahwa APE-X DQN dapat menghancurkan kota dan sekaligus membunuh seluruh unit agen
+defender pada salah satu episodenya.
+30 poin merupakan poin yang hampir paling tinggi untuk bisa dicapai.
+IMPALA mendapatkan 14 poin, yang berarti agen \emph{attacker} algoritma ini dapat menghancurkan kota dalam salah satu episodenya,
+namun melakukannya dengan giliran yang lebih banyak dibandingkan DQN atau APE-X DQN.
+PPO memiliki nilai max hanya sebesar 2.8 menunjukan bahwa agen \emph{attacker} PPO berhasil menghancurkan kota namun memerlukan hampir seluruh giliran yang ada.
+
+Nilai \emph{min episode rewards} menunjukan performa terburuk agen \emph{attacker} pada salah satu episode.
+PPO merupakan algoritma yang memiliki nilai minimum tertinggi sebesar 0.
+Jika dibandingkan dengan nilai maksimum milik PPO, PPO merupakan algoritma yang cukup stabil karena perbedaan antara
+minimum dan maksimum sangat kecil.
+APE-X DQN merupakan algoritma kedua terbaik denga minimum sebesar -0.9, diikuti oleh DQN pada -15.4 dan IMPALA -26.2.
+
+\subsection{Defender Min dan Max Episode Rewards}
+
+\begin{table}[H]
+  \centering
+  \caption{Tabel nilai min dan max \emph{episode rewards} agen \emph{defender}}
+  \label{table:defenderMinMaxRewards}
+  \begin{tabular}{|c|c|c|}
+  \hline
+  \textbf{Algorithm} & \textbf{\begin{tabular}[c]{@{}c@{}}Defender Min\\ Episode Reward\end{tabular}} & \textbf{\begin{tabular}[c]{@{}c@{}}Defender Max\\ Episode Reward\end{tabular}} \\ \hline
+  APE-X DQN           & 0                                                                              & 9.2                                                                            \\ \hline
+  DQN                & -11.8                                                                          & 10.7                                                                           \\ \hline
+  PPO                & -24.2                                                                          & 7.5                                                                            \\ \hline
+  IMPALA             & -2.2                                                                           & 8.6                                                                            \\ \hline
+  \end{tabular}
+\end{table}
+
+Pada nilai \emph{max episode rewards} agen \emph{defender}, seluruh algoritma memiliki nilai yang tidak jauh berbeda antara satu sama lain.
+DQN menungguli algoritma lain pada nilai 10l7, diikuti oleh APE-X DQN pada 9.2, IMPALA 8.6 dan terakhir PPO pada 7.5.
+Agen \emph{defender} seluruh algoritma dapat membunuh beberapa atau seluruh unit milik agen \emph{attacker} pada salah satu episodenya.
+Maka performa terbaik dari seluruh algoritma hampir sama antar satu sama lain.
+
+Pada nilai \emph{min episode rewards} agen \emph{defender}, APE-X DQN merupakan algoritma dengan nilai minimum tertinggi.
+Nilai 0 yang didapatkan merupakan keadaan dimana agen \emph{defender} tidak melakukan banyak kesalahan pergerakan (bergerak ke ujung area)
+atau dapat mengkompensasi kesalahan tersebut dengan membunuh beberapa unit lawan.
+Berbalik dengan agen \emph{attacker}, IMPALA merupakan algoritma yang paling stabil dalam perbedaan nilai minimum dan maksimum.
+Sedangkan PPO tidak sestabil nilai maksimum dan minimum agen \emph{attacker}.
+PPO merupakan algoritma dengan nilai minimum terendah.
 
 \subsection{Waktu dan Pemakaian Resource Algoritma}
 
@@ -116,6 +200,9 @@ sebesar 36-39\%.
 Setelah dilakukan \emph{training}, terdapat dua macam evaluasi yang dilakukan.
 Evaluasi antar generasi algoritma dan evaluasi dengan \emph{environment} yang lebih luas.
 Hasil dari kedua evaluasi merupakan \emph{rewards} yang didapatkan oleh agen pada setiap generasi algoritma.
+Evaluasi dimulai dari generasi 1 agen \emph{attakcer} melawan seluruh generasi dari agen \emph{defender}.
+Kemudian dilanjut pada generasi 2 agen \emph{attacker} melawan seluruh generasi dari agen \emph{defender}.
+Hingga seluruh generasi dari sebuah algoritma sudah melawan satu sama lain.
 
 \subsection{Hasil Evaluasi Antar Generasi Algoritma}
 
@@ -156,7 +243,7 @@ Generasi ke 3 memiliki nilai paling rendah saat melawan generasi manapun.
 
 \begin{table}[H]
   \centering
-  \caption{Evaluasi Antar Generasi APEX DQN}
+  \caption{Evaluasi Antar Generasi APE-X DQN}
   \label{table:apexDqnVersusResult}
   \begin{tabular}{|c|c|c|c|}
   \hline
@@ -180,8 +267,8 @@ Generasi ke 3 memiliki nilai paling rendah saat melawan generasi manapun.
   \end{tabular}
 \end{table}
 
-Algoritma APEX DQN memiliki awal yang mirip dengan DQN, dimana nilai \emph{mean episode rewards} sangat kecil pada generasi awal.
-Hal ini karena APEX DQN juga menggunakan \emph{epsilon greedy} untuk eksplorasi dan eksploitasi nilai \emph{Q-value}.
+Algoritma APE-X DQN memiliki awal yang mirip dengan DQN, dimana nilai \emph{mean episode rewards} sangat kecil pada generasi awal.
+Hal ini karena APE-X DQN juga menggunakan \emph{epsilon greedy} untuk eksplorasi dan eksploitasi nilai \emph{Q-value}.
 Namun, dapat dilihat bahwa nilai \emph{episode mean rewards} kedua agen meningkat pada setiap generasi.
 Agen \emph{attacker} mampu mendapatkan nilai di atas sepuluh pada generasi ke empat.
 
@@ -211,8 +298,8 @@ Agen \emph{attacker} mampu mendapatkan nilai di atas sepuluh pada generasi ke em
   \end{tabular}
 \end{table}
 
-Sama seperti APEX DQN, agen \emph{attacker} PPO mendapatkan peningkatan pada setiap generasi.
-Akan tetapi, peningkatan yang dialami oleh PPO tidak sesignifikan peningkatan pada algoritma APEX DQN.
+Sama seperti APE-X DQN, agen \emph{attacker} PPO mendapatkan peningkatan pada setiap generasi.
+Akan tetapi, peningkatan yang dialami oleh PPO tidak sesignifikan peningkatan pada algoritma APE-X DQN.
 Dimana generasi 4 adalah generasi terbaik untuk agen \emph{attacker}, generasi 2 merupakan generasi terbaik untuk agen \emph{defender}.
 
 \begin{table}[H]
@@ -248,7 +335,7 @@ dengan generasi terbaik berupa generasi 1 yang mempunyai nilai sekitar -15 poin.
 
 \subsection{Hasil Evaluasi dengan Environment Lebih Luas}
 
-Hasil pada algoritma APEX DQN dan PPO tidak memiliki hasil lengkap. 
+Hasil pada algoritma APE-X DQN dan PPO tidak memiliki hasil lengkap. 
 Hal ini dikarenakan dua model tersebut yang macet menjalankan evaluasi setelah beberapa generasi.
 Sampai saat ini, solusi untuk masalah ini belum ditemukan dan akan dikomunikasikan ke pengembang RLlib.
 Karena proses training ulang yang memakan waktu lama, maka generasi tersebut tidak dievaluasi.
@@ -287,7 +374,7 @@ Untuk agen \emph{defender}, generasi ke 2 juga merupakan generasi yang memiliki 
 
 \begin{table}[H]
   \centering
-  \caption{Evaluasi \emph{Environment} 16x16 APEX DQN}
+  \caption{Evaluasi \emph{Environment} 16x16 APE-X DQN}
   \label{table:apexDqn16x16Result}
   \begin{tabular}{|c|c|c|c|}
   \hline
@@ -311,8 +398,11 @@ Untuk agen \emph{defender}, generasi ke 2 juga merupakan generasi yang memiliki 
   \end{tabular}
 \end{table}
 
-Tidak banyak yang dapat dianalisis dalam algoritma APEX DQN pada evaluasi ini.
+Karena keterbatasan waktu evaluasi, tidak seluruh generasi APE-X DQN dapat dievaluasi.
 Selama generasi 1, agen \emph{attacker} terlihat lebih stabil daripada saat evaluasi sebelumnya.
+Berbeda dengan evaluasi sebelumnya, generasi 1 dari agen \emph{attacker} APE-X DQN memiliki nilai \emph{mean reward} yang lebih besar.
+Generasi 1 APE-X DQN dalam evaluasi ini merupakan generasi terbaik untuk kedua agen.
+
 
 \begin{table}[H]
   \centering
@@ -340,7 +430,9 @@ Selama generasi 1, agen \emph{attacker} terlihat lebih stabil daripada saat eval
   \end{tabular}
 \end{table}
 
-Algoritma PPO juga memiliki perubahan yang stabil dalam evaluasi ini.
+Evaluasi pada setiap generasi juga tidak dapat dilakukan pada algoritma PPO karena masalah yang sama dengan APE-X DQN.
+Evaluasi yang dapat dilakukan adalah generasi 1 agen \emph{attacker} melawan seluruh generasi agen \emph{defender}
+Algoritma PPO memiliki perubahan yang stabil dalam evaluasi ini.
 Pengecualian pada generasi 2 untuk agen \emph{defender} yang memiliki nilai -40.
 
 \begin{table}[H]
@@ -375,3 +467,19 @@ Generasi terbaik untuk agen \emph{attacker} IMPALA tidak cukup jelas.
 Akan tetapi generasi 1 merupakan generasi paling buruk.
 Untuk agen \emph{defender}, generasi 1 merupakan generasi terbaik.
 Generasi lainnya memiliki nilai yang mirip antara satu dengan yang lain.
+
+\section{Masalah Saat Evaluasi APE-X DQN dan PPO}
+Pada saat evaluasi, algoritma APE-X DQN dan PPO tidak dapat sepenuhnya dijalankan pada seluruh generasi.
+Generasi yang bermasalah adalah generasi 2 dan ke atas agen \emph{defender} untuk kedua algoritma.
+Algoritma tersebut dapat berjalan, hanya saja waktu inferensi pada generasi tersebut yang tidak seperti biasanya.
+
+Dalam evaluasi sebuah generasi, biasanya diperlukan waktu kurang dari sepuluh menit.
+Maka satu algoritma setidaknya akan menyelesaikan evaluasi dalam waktu kurang dari satu jam.
+Namun dalam menjalankan evaluasi agen \emph{attacker} APE-X DQN dan PPO generasi 2, evaluasi berjalan selama lebih dari 8 jam.
+Sedangkan progress yang didapatkan dalam 8 jam tersebut nihil.
+
+M dicoba seperti menurunkan jumlah iterasi menjadi satu episode per generasi tidak sepenuhnya menyelesaikan masalah ini.
+Saat diubah menjadi satu episode per generasi, generasi yang bermasalah merupakan generasi 3 dan 4.
+Karena keterbatasan waktu, maka tidak memungkinkan dilakukan training ulang untuk bobot dari generasi algoritma ini.
+Adanya juga kemungkinan ini adalah sebuah \emph{bug} dalam RLlib.
+Akan perlu dikomunikasikan lebih lanjut ke pengembang \emph{RLlib} untuk melakukan konfirmasi atas masalah ini.

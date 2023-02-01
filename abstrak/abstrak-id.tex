@@ -36,9 +36,12 @@ Dalam penelitian ini, dirancang sebuah \emph{environment} yang mengikuti mekanis
 sebagai media implementasi DRL. Terdapat dua agen dalam \emph{environment} ini: agen \emph{attacker} dan \emph{defender}.
 Kedua agen memiliki tujuan yang berbeda (\emph{asymmetrical}) dan saling berlawanan (\emph{adversarial}).
 Terdapat empat algoritma \emph{state of the art} (SOTA) yang digunakan dalam eksperimen penelitian ini:
-DQN, APE-X DQN, PPO, dan IMPALA. Dari hasil experimen, didapatkan bahwa APE-X DQN memiliki performa terbaik bagi agen \emph{attacker}
-dan agen \emph{defender}. Agen \emph{attacker} APE-X DQN mampu menghancurkan kota secara konsisten sebelum 2 juta \emph{environment steps}.
-Akan tetapi, APE-X DQN menggunakan CPU dan RAM lebih banyak dari algoritma lain, dengan penggunaan CPU sebanyak 79.95\% dan RAM sebanyak 82.3\%.
+\emph{Deep Q-Learning} (DQN), \emph{Distributed Prioritized Experience Replay Deep Q-Networks} (APE-X DQN),
+\emph{Proximal Policy Optimization} (PPO), and \emph{Importance Weighted Actor-Learner Architecture} (IMPALA). Dari hasil experimen, didapatkan bahwa APE-X DQN memiliki performa terbaik bagi agen \emph{attacker}
+dan agen \emph{defender}. Agen \emph{attacker} APE-X DQN mampu menghancurkan kota secara konsisten sebelum 2 juta \emph{environment steps} saat \emph{training}.
+APE-X DQN juga merupakan algoritma yang memiliki performa paling baik saat evaluasi.
+Akan tetapi, beberapa generasi APE-X DQN tidak dapat dievaluasi pada evaluasi ke dua (Skenario \emph{environment} 16x16).
+APE-X DQN menggunakan CPU dan RAM lebih banyak dari algoritma lain, dengan penggunaan CPU sebanyak 79.95\% dan RAM sebanyak 82.3\%.
 
 % Ubah kata-kata berikut dengan kata kunci dari tugas akhir
 Kata Kunci: Game strategi, \emph{Deep Reinforcement Learning, Artificial Intelligence, Machine Learning, Civilization VI, DQN, APE-X, PPO, IMPALA}

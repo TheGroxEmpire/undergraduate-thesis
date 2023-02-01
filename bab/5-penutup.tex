@@ -7,7 +7,7 @@
 \label{sec:kesimpulan}
 
 Dalam penelitian telah diimplementasikan beberapa algoritma \emph{state of the art} \emph{deep reinforcement learning} dalam \emph{environment}
-yang mengikuti mekanisme \emph{combat} dalam Civ6.
+yang mengikuti mekanisme \emph{combat} dalam \emph{Civilization VI}.
 Dalam \emph{environment} ini, terdapat dua agen: agen \emph{attacker} dan agen \emph{defender}.
 Kedua agen mempunyai tujuan yang berbeda \emph{asymmetrical} dan saling berlawanan \emph{adversarial}.
 Dari eksperimen yang dilakukan dengan algoritma-algoritma tersebut, didapatkan:
@@ -17,13 +17,16 @@ Dari eksperimen yang dilakukan dengan algoritma-algoritma tersebut, didapatkan:
   \item \emph{Deep reinforcement learning} dapat digunakan untuk membuat agen yang cukup dalam \emph{environment} yang mensimulasi mekanisme \emph{combat}
   Civ6 secara terbatas.
 
-  \item \emph{Distributed Prioritized Experience Replay Deep Q-Networks} merupakan algoritma yang memiliki reward paling tinggi saat \emph{training}. Agen \emph{attacker} dengan APE-X DQN mampu
+  \item \emph{Distributed Prioritized Experience Replay Deep Q-Networks} merupakan algoritma yang memiliki reward paling tinggi saat \emph{training}. Agen \emph{attacker} dengan \emph{Distributed Prioritized Experience Replay Deep Q-Networks} mampu
   menghancurkan kota secara konsisten sebelum 2 juta \emph{environment steps}.
   Agen \emph{defender} dengan \emph{Distributed Prioritized Experience Replay Deep Q-Networks} juga merupakan algoritma yang paling optimal
   dibanding algoritma lain saat \emph{training}.
 
   \item Saat training \emph{Distributed Prioritized Experience Replay Deep Q-Networks} menggunakan RAM dan CPU terbanyak dengan penggunaan CPU sebanyak 79.95\% dan penggunaan
   RAM sebanyak 82.3\%.
+
+  \item Pada evaluasi \emph{Distributed Prioritized Experience Replay Deep Q-Networks} dan \emph{Proximal Policy Optimization} memiliki masalah dalam inferensi.
+  Sehingga evaluasi tidak dilakukan secara penuh pada setiap generasi. Hal ini memungkinkan masalah yang sama terjadi ketika model digunakan dalam sebuah environment lain.
 
 \end{enumerate}
 

@@ -51,7 +51,7 @@ Penempatan \emph{unit} agen dilakukan secara acak dengan pembatasan.
 \begin{figure}[H]
   \centering
     % Nama dari file gambar yang diinputkan
-    \includegraphics[scale=0.3]{gambar/environment_screenshot.png}
+    \includegraphics[scale=0.4]{gambar/environment_screenshot.png}
     % Keterangan gambar yang diinputkan
     \caption{\emph{Screenshot environment} dalam mode \emph{render}. \emph{Unit} milik agen \emph{attacker} memiliki teks \emph{hit points} berwarna merah dan unit milik agen \emph{defender} memiliki teks \emph{hit points} berwarna biru.}
     % Label referensi dari gambar yang diinputkan
@@ -141,7 +141,9 @@ Berikut diagram dari pergerakan dan pemilihan sekuensial ini:
 
 Dalam giliran \emph{city}, jika tidak terdapat setidaknya tiga \emph{unit} agen \emph{attacker} didekat kota tersebut,
 maka kota akan memulihkan 20 \emph{hit points} setiap gilirannya. Hal ini untuk mensimulasikan mekanisme keadaan \emph{siege}
-dalam Civ6. Berikut diagram giliran pada kota:
+dalam Civ6. Sebuah kota yang tidak dalam keadaan \emph{siege} tidak dapat dihancurkan oleh agen \emph{attacker}.
+Maka agen \emph{attacker} harus mengepung kota tersebut dengan setidaknya tiga \emph{unit}.
+Berikut diagram giliran pada kota:
 
 \begin{figure}[H]
   \centering
@@ -195,6 +197,11 @@ Berikut merupakan \emph{state} yang didapatkan oleh agen saat observasi:
   \item Nilai HP dari seluruh \emph{unit}: $HP_{1}, \dots HP_{n}$
   \item Nilai movement points dari seluruh \emph{unit}: $MP_{1}, \dots MP_{n}$
 \end{itemize}
+
+Informasi-informasi ini dipilih karena dirasa ini adalah informasi yang berguna untuk agen agar dapat menyelesaikan tujuan mereka.
+Informasi seperti jarak \emph{unit} dari kota memberikan posisi setiap unit dan tujuan dari agen \emph{attacker}, yaitu pusat kota.
+Nilai HP berguna untuk memberikan kondisi unit dari setiap agen.
+Nilai \emph{movement points} digunakan untuk memberikan informasi tentang unit yang dapat bergerak ataupun sudah melakukan gerakan pada giliran agen.
 
 \subsection{Reward Agen}
 \emph{Reward} merupakan nilai yang diberikan kepada agen ketika agen tersebut melakukan sebuah \emph{action}.
@@ -295,8 +302,27 @@ dengan PER. \emph{Replay buffer} dikompres menggunakan LZ4 untuk mengurangi peng
     % Keterangan gambar yang diinputkan
     \caption{Arsitektur DQN pada RLlib 2.0.0 \citep{rllibDocumentation}}
     % Label referensi dari gambar yang diinputkan
-    \label{fig:rllib_dqn_architecture}
+    \label{fig:rllibDqnArchitecture}
 \end{figure}
+
+Terdapat dua cabang \emph{hidden network} dalam \emph{double} DQN.
+Kemudian dua cabang tersebut adalah \emph{dueling network}.
+Dilakukan juga prioritisasi \emph{experience replay} yang lebih berguna untuk proses \emph{learning}
+agen dengan sistem PER.
+
+\emph{Sample batches} berupa \emph{experience replay} akan dikirim secara sinkron dari seluruh \emph{rollout workers} (CPU \emph{actors}) ke sebuah \emph{replay buffer}.
+\emph{Replay buffer} tersebut kemudian akan diberikan kepada sebuah \emph{learner} yang akan menghasilkan bobot terbaru untuk \emph{rollout workers}.
+
+\begin{figure}[H]
+  \centering
+    % Nama dari file gambar yang diinputkan
+    \includegraphics[scale=0.47]{gambar/ddqn_per_algorithm.png}
+    % Keterangan gambar yang diinputkan
+    \caption{Algoritma DDQN dengan PER}
+    % Label referensi dari gambar yang diinputkan
+    \label{fig:ddqnPer}
+\end{figure}
+
 
 \subsection{Implementasi APE-X DQN}
 Implementasi APE-X DQN dalam RLlib 2.0.0 menggunakan implementasi DQN yang ada dengan
@@ -315,12 +341,18 @@ tersebut terganti oleh 3 \emph{rollout\_workers} yang dideklarasikan pada \ref{l
     \label{fig:rllib_apex-dqn_architecture}
 \end{figure}
 
+Berbeda sedikit dengan DQN, APE-X merupakan arsitektur yang dibuat untuk \emph{distributed learning}.
+CPU \emph{actors} dari APE-X tidak mengirimkan \emph{experience replay} secara sinkron, akan tetapi mengumpulkan \emph{experience replay}
+tersebut ke dalam \emph{buffer} lokal yang kemudian akan dikirim secara periodik ke sebuah \emph{learner}.
+\emph{Learner} akan menghasilkan bobot yang diperlukan dan menghapus \emph{replay} lama dalam memori.
+
+
 \begin{figure}[H]
   \centering
     % Nama dari file gambar yang diinputkan
-    \includegraphics[scale=0.5]{gambar/apex_actor_learner_algorithm.png}
+    \includegraphics[scale=0.65]{gambar/apex_actor_learner_algorithm.png}
     % Keterangan gambar yang diinputkan
-    \caption{Algoritma \emph{actor} dan \emph{learner} APEX DQN}
+    \caption{Algoritma \emph{actor} dan \emph{learner} APE-X DQN}
     % Label referensi dari gambar yang diinputkan
     \label{fig:apexActorLearnerAlgorithm}
 \end{figure}
@@ -340,6 +372,16 @@ dari \emph{host memory}, sehingga performa lebih baik dari implementasi secara \
     \label{fig:rllib_ppo_architecture}
 \end{figure}
 
+\begin{figure}[H]
+  \centering
+    % Nama dari file gambar yang diinputkan
+    \includegraphics[scale=0.9]{gambar/ppo_algorithm.png}
+    % Keterangan gambar yang diinputkan
+    \caption{Algoritma PPO \citep{ppo}}
+    % Label referensi dari gambar yang diinputkan
+    \label{fig:ppoAlgorithm}
+\end{figure}
+
 \subsection{Implementasi IMPALA}
 Implementasi IMPALA dari RLlib 2.0.0 menggunakan referensi kode V-trace milik DeepMind \citep{impala}.
 Seperti APE-X DQN, IMPALA merupakan sebuah arsitektur terdistribusi. Arsitektur IMPALA juga mirip dengan PPO.
@@ -348,12 +390,18 @@ Akan tetapi, PPO menggunakan \emph{synchronous broadcast / sampling}, sedangkan 
 \begin{figure}[H]
   \centering
     % Nama dari file gambar yang diinputkan
-    \includegraphics[scale=0.6]{gambar/rllib_impala_architecture.png}
+    \includegraphics[scale=0.62]{gambar/rllib_impala_architecture.png}
     % Keterangan gambar yang diinputkan
     \caption{Arsitektur IMPALA pada RLlib 2.0.0 \citep{rllibDocumentation}}
     % Label referensi dari gambar yang diinputkan
     \label{fig:rllib_impala_architecture}
 \end{figure}
+
+IMPALA menggunakan \emph{replay buffer} untuk mengumpulkan \emph{sample batches} yang dihasilkan oleh \emph{actors}.
+\emph{Sample batches} dapat dikirimkan tanpa harus sinkronisasi antara satu aktor dengan yang lain.
+Hal ini mempercepat parallelisasi algoritma dengan CPU jumlah banyak.
+Karena pengumpulan \emph{sample batches} tidak sinkron, maka terdapat \emph{delay} antara \emph{actors} dengan \emph{learner}.
+Delay tersebut akan dikurangi menggunakan \emph{V-trace} yang terdapat dalam arsitektur IMPALA.
 
 \section{Tahap Eksperimen}
 Dalam eksperimen, digunakan beberapa Tahap untuk \emph{training} dan \emph{testing} performa agen.
@@ -374,10 +422,59 @@ jika agen \emph{attacker} gagal menghancurkan kota.
 
 Setiap satu \emph{environment step}, sebuah agen melakukan satu pergerakan terhadap sebuah \emph{unit} miliknya.
 Training dilakukan selama 100 juta \emph{total environment steps}.
-Angka ini dipilih karena merupakan batas atas untuk menggunakan APEX DQN dengan spesifikasi PC ini.
-APEX DQN akan membutuhkan RAM yang lebih dari 32GB ketika dijalankan lebih dari 100 juta \emph{total environment steps}.
+Angka ini dipilih karena merupakan batas atas untuk menggunakan APE-X DQN dengan spesifikasi PC ini.
+APE-X DQN akan membutuhkan RAM yang lebih dari 32GB ketika dijalankan lebih dari 100 juta \emph{total environment steps}.
 Kami rasa, 100 juta \emph{total environment steps} juga lebih dari cukup untuk melakukan konvergensi pada seluruh algoritma
 dalam \emph{environment} ini.
+
+Untuk melakukan training, digunakan \emph{Tuner} API dari RLlib.
+\emph{Tuner} diperlukan untuk menghasilkan \emph{metric} untuk kedua agen,
+seperti \emph{attacker episode rewards} dan sebagainya.
+Berikut penggunaan \emph{Tuner} dalam \emph{training}:
+
+\begin{lstlisting}[
+  language=Python,
+  caption={Cuplikan kode \emph{training}},
+  label={lst:training}
+]
+config.multi_agent(
+  result = tune.Tuner(algorithm_version,
+  param_space=config,
+  run_config=air.RunConfig(
+        stop={"num_env_steps_sampled": 10000000},
+        checkpoint_config=air.CheckpointConfig(
+
+            checkpoint_frequency=100,
+            checkpoint_at_end=True,
+        ),
+
+        # local_dir=f"models/{comment_suffix}",
+
+        progress_reporter=CLIReporter(
+
+        metric_columns={
+
+            "training_iteration": "training_iteration",
+
+            "time_total_s": "time_total_s",
+
+            "timesteps_total": "timesteps",
+
+            "episodes_this_iter": "episodes_trained",
+
+            "custom_metrics/policy_reward_mean/attacker": "m_reward_a",
+
+            "custom_metrics/policy_reward_mean/defender": "m_reward_d",
+
+            "episode_reward_mean": "mean_reward_sum",
+        },
+        sort_by_metric=True,
+        ),
+      ),
+    )
+  ).fit()
+
+\end{lstlisting}
 
 \begin{figure}[H]
   \centering
@@ -391,7 +488,10 @@ dalam \emph{environment} ini.
 
 Hasil dari training ini merupakan beberapa generasi nilai bobot agen dari setiap algoritma dan nilai rata-rata \emph{rewards}
 agen \emph{defender} dan \emph{attacker} dari setiap algoritma.
-Nilai bobot beberapa generasi tersebut akan digunakan untuk proses evaluasi
+Nilai bobot beberapa generasi tersebut akan digunakan untuk proses evaluasi.
+Terdapat juga data lama waktu \emph{training}, waktu inferensi, waktu proses informasi \emph{environment},
+dan penggunaan \emph{resource} sistem dari setiap algoritma.
+Data-data tersebut berguna untuk menentukan algoritma mana yang memakan waktu \emph{training} yang lama ataupun menggunakan \emph{resource} sistem yang banyak.
 
 \subsection{Evaluasi Antar Generasi Algoritma}
 Didapatkan beberapa generasi yang dihasilkan selama proses \emph{training}. 
@@ -407,8 +507,8 @@ Hasil bobot disimpan berdasarkan iterasi \emph{training}.
 Karena total iterasi \emph{training} setiap algoritma berbeda beda, maka berikut iterasi training yang diambil pada setiap algoritma:
 \begin{itemize}
   \item DQN: iterasi 600, 1200, 1700, dan 2300
-  \item APEX DQN: iterasi 100, 200, 300, dan 400
-  \item PPO: 600, 1200, 1800, dan 2500s
+  \item APE-X DQN: iterasi 100, 200, 300, dan 400
+  \item PPO: 600, 1200, 1800, dan 2500
   \item IMPALA: iterasi 200, 400, 600, dan 755
 \end{itemize}
 
@@ -418,16 +518,75 @@ generasi pertama agen \emph{attacker} melawan generasi kedua agen \emph{defender
 dan seterusnya sampai generasi keempat agen \emph{attacker} melawan generasi keempat agen \emph{defender}.
 Hasil dari evaluasi ini berupa nilai \emph{rewards} agen \emph{attacker} dan \emph{defender} dari setiap algoritma.
 
-\subsection{Evaluasi dengan Environment Lebih Luas}
-Untuk menguji adaptasi agen terhadap bentuk \emph{environment} lain, dilakukan evaluasi dengan skenario lain. 
-Pengujian skenario dilakukan selama 100 episode untuk setiap generasi algoritma.
-Skenario yang akan diujicobakan berukuran 16x16. 
-Hasil dari pengujian adalah nilai \emph{reward} yang didapatkan oleh kedua agen pada setiap generasi.
+\begin{lstlisting}[
+  language=Python,
+  caption={Cuplikan kode evaluasi},
+  label={lst:evaluation}
+  ]
+  for attacker_gen in range(1, 5):
+    for defender_gen in range(1, 5):
+        reward_sums = {a: 0 for a in env.possible_agents}
+        for eps in range(0, total_eps):
+            env.reset()
+            for agent in env.agent_iter():
+                observation, reward, dones, info = env.last()
+                observation = np.concatenate((observation['location'], observation['hp'], observation['movement']), axis=0)
+                reward_sums[agent] += reward
+                if agent == 'attacker':
+                    policy = restored_policies[attacker_gen][agent]
+                elif agent == 'defender':
+                    policy = restored_policies[defender_gen][agent]
+
+                action, _, _ = policy.compute_single_action(observation)
+                if dones:
+                    break
+
+                env.step(action)
+
+        env.close()
+\end{lstlisting}
 
 \begin{figure}[H]
   \centering
     % Nama dari file gambar yang diinputkan
-    \includegraphics[scale=0.4]{gambar/16x16_env.jpg}
+    \includegraphics[scale=1.05]{gambar/evaluation_inference.png}
+    % Keterangan gambar yang diinputkan
+    \caption{Proses evaluasi}
+    % Label referensi dari gambar yang diinputkan
+    \label{fig:evaluationProcess}
+\end{figure}
+
+\subsection{Evaluasi dengan Environment Lebih Luas}
+Untuk menguji adaptasi agen terhadap bentuk \emph{environment} lain, dilakukan evaluasi dengan skenario lain. 
+Area \emph{environment} dalam kondisi game strategi 4X memiliki area yang jauh lebih besar dari 8x8.
+Maka, pengujian dengan \emph{environment} 16x16 berguna untuk menguji kemampuan agen dalam area yang lebih besar daripada\
+area pada saat agen tersebut melakukan \emph{training}.
+Aspek-aspek lain dari \emph{environment} seperti jumlah dan jenis \emph{unit}, letak kota, letak awal \emph{unit}, dan status lainnya tetap sama dengan \emph{environment 8x8}.
+
+Dipilih angka 16x16 karena kami rasa ini adalah ukuran paling besar untuk jumlah \emph{unit} yang ada pada \emph{environment}.
+Jika area terlalu besar, maka \emph{unit} tidak dapat berinteraski dengan satu sama lain.
+
+Untuk membuat \emph{environment} menjadi ukuran 16x16, cukup mengganti konstanta dalam \emph{environment}:
+
+\begin{itemize}
+  \item GAME WIDTH: dari 2000 menjadi 1000
+  \item GAME HEIGHT: dari 2000 menjadi 1000
+  \item CELL WIDTH: dari 128 menjadi 64
+  \item CELL HEIGHT: dari 128 menjadi 64
+  \item HEX SIZE: dari 128 menjadi 64
+  \item EDGE OFFSET: dari 128 menjadi 64
+  \item MAP WIDTH: dari 8 menjadi 16
+  \item MAP HEIGHT: dari 8 menjadi 16
+\end{itemize}
+
+Pengujian skenario ukuran 16x16 dilakukan selama 100 episode untuk setiap generasi algoritma.
+Hasil dari pengujian adalah nilai \emph{reward} yang didapatkan oleh kedua agen pada setiap generasi.
+Nilai dari hasil pengujian ini kemudian akan dibandingkan kepada hasil dari evaluasi antar generasi sebelumnya.
+
+\begin{figure}[H]
+  \centering
+    % Nama dari file gambar yang diinputkan
+    \includegraphics[scale=0.51]{gambar/16x16_env.jpg}
     % Keterangan gambar yang diinputkan
     \caption{\emph{Render environment} dengan ukuran 16x16.}
     % Label referensi dari gambar yang diinputkan
