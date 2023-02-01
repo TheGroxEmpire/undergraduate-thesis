@@ -13,7 +13,8 @@ Civ6 adalah game strategi berbasis giliran (\emph{Turn-based strategy game}) ter
 Dalam game ini, pemain melakukan aksi bergilir dengan lawannya dalam area map yang tersusun dari lantai segi enam (\emph{hexagonal grid}).
 Pemain dapat mempunyai lawan berupa manusia lain maupun sebuah agen berbasis \emph{artificial intelligence} (AI).
 
-Civ6 merupakan game 4X (\emph{Explore, Expand, Exploit, Exterminate}). Dalam game ini, pemain dapat memilih negara-negara yang telah muncul dalam sejarah. 
+Civ6 merupakan game 4X (\emph{Explore, Expand, Exploit, Exterminate}). 
+Dalam game ini, pemain dapat memilih negara-negara yang telah muncul dalam sejarah. 
 Pemain memiliki tujuan untuk menjelajah area di dalam game yang telah dibuat secara acak (\emph{Explore}), memperluas teritori milik pemain (\emph{Expand}), memanfaatkan teritori yang dimiliki (\emph{Exploit}), dan menghancurkan teritori milik lawan (\emph{Exterminate}). 
 Aspek-aspek 4X tersebut menyebabkan game ini menjadi sangat kompleks. 
 Lingkungan kompleks dalam \emph{Civilization} memberikan banyak kemungkinan dalam \emph{action space} dan \emph{state space} yang luas \citep{civ4City}.
@@ -23,7 +24,7 @@ Akan tetapi, game strategi 4X seperti Civ6 masih memiliki kapabilitas agen berba
 \begin{figure}[H]
     \centering
       % Nama dari file gambar yang diinputkan
-      \includegraphics[scale=0.2]{gambar/civ6_screenshot.png}
+      \includegraphics[scale=0.23]{gambar/civ6_screenshot.png}
       % Keterangan gambar yang diinputkan
       \caption{\emph{Combat} dalam \emph{Civilization} VI}
       % Label referensi dari gambar yang diinputkan
@@ -45,33 +46,38 @@ pemain akan mendapatkan bahwa agen berbasis AI yang dilawannya sudah tidak lagi
 memberikan tantangan yang cukup. Hal ini menyebabkan sebuah fenomena bernama \emph{Chick Parabola}. 
 \emph{Chick Parabola} merupakan fenomena dimana ketertarikan pemain terhadap game tersebut menurun seiring berkembangnya kemampuan pemain \citep{chickParabola}.
 
-Kurangnya kapabilitas agen berbasis AI dalam Civ6 sangat terlihat dalam aspek combat. Dalam combat, agen berbasis AI tidak dapat memutuskan aksi unit secara optimal. Agen AI didapatkan sering menempatkan unit di posisi yang tidak logis. 
+Kurangnya kapabilitas agen berbasis AI dalam Civ6 sangat terlihat dalam aspek \emph{combat}. 
+Dalam \emph{combat}, agen berbasis AI tidak dapat memutuskan aksi unit secara optimal. 
+Agen AI didapatkan sering menempatkan unit di posisi yang tidak logis. 
 Aksi yang dilakukan oleh agen berbasis AI serasa acak. 
-Developer Civ6 (Firaxis) mencoba mengatasi hal ini dengan menambahkan modifiers. 
-Pada tingkat kesulitan yang tinggi, agen berbasis AI akan mendapatkan modifiers berupa combat value. Secara praktis, bonus ini diberikan untuk menanggulangi kurangnya kemampuan taktis dan strategis agen berbasis AI. 
+Developer Civ6 (\emph{Firaxis}) mencoba mengatasi hal ini dengan menambahkan modifiers. 
+Pada tingkat kesulitan yang tinggi, agen berbasis AI akan mendapatkan modifiers berupa combat value. 
+Secara praktis, bonus ini diberikan untuk menanggulangi kurangnya kemampuan taktis dan strategis agen berbasis AI. 
 Solusi ini tidaklah ideal dalam game strategi yang secara desain mengedepankan kemampuan untuk berfikir dan merencanakan aksi untuk mencapai tujuan.
 Diperlukanlah sebuah teknik maupun teknologi AI baru untuk mengatasi masalah ini.
 
 \section{Batasan Masalah}
 \label{sec:batasanmasalah}
 
-Penelitian ini mencakup pada implementasi beberapa algoritma \emph{state of the art} (SOTA) DRL dalam sebuah \emph{environment}. 
-Mekanisme \emph{environment} mengikuti mekanisme \emph{combat} dalam game Civ6 yang merupakan \emph{hexagonal grid turn-based strategy game} terpopuler saat penelitian ini ditulis. 
-Luas \emph{environment} sebesar 8 x 8. Di tengah \emph{environment} terdapat sebuah kota yang dapat direbut oleh agen AI. Terdapat dua agen dalam penelitian ini, yaitu agen \emph{attacker} dan agen \emph{defender}. 
-Jenis unit yang digunakan oleh agen AI berupa unit jarak dekat (\emph{warrior}) dan unit jarak jauh (\emph{slinger}). Kedua unit tersebut merupakan unit paling awal yang digunakan dalam Civ6.
-Sebuah game penuh berbasis DRL berada di luar batasan penelitian ini. Namun, \emph{environment} yang digunakan sebagai prototipe akan menjadi \emph{proof of concept}
-akan kapabilitas DRL dalam \emph{hexagonal grid turn-based strategy game}.
+Penelitian ini mencakup pada implementasi beberapa algoritma \emph{state of the art} \emph{deep reinforcement learning} dalam sebuah \emph{environment}. 
+Mekanisme \emph{environment} mengikuti mekanisme \emph{combat} dalam game \emph{Civilization} 6 yang merupakan \emph{hexagonal grid turn-based strategy game} terpopuler saat penelitian ini ditulis. 
+Luas \emph{environment} sebesar 8 x 8. Di tengah \emph{environment} terdapat sebuah kota yang dapat direbut oleh agen AI. 
+Terdapat dua agen dalam penelitian ini, yaitu agen \emph{attacker} dan agen \emph{defender}. 
+Jenis unit yang digunakan oleh agen AI berupa unit jarak dekat (\emph{warrior}) dan unit jarak jauh (\emph{slinger}). 
+Kedua unit tersebut merupakan unit paling awal yang digunakan dalam \emph{Civilization} 6.
+Sebuah game penuh berbasis DRL berada di luar batasan penelitian ini. 
+Namun, \emph{environment} yang digunakan sebagai prototipe akan menjadi \emph{proof of concept} akan kapabilitas DRL dalam \emph{hexagonal grid turn-based strategy game}.
 
 \section{Tujuan}
 \label{sec:Tujuan}
 
 Tujuan penelitian ini adalah mengimplementasikan dan mengukur kemampuan dari beberapa 
-algoritma SOTA DRL dalam sebuah \emph{environment} yang memiliki skenario combat dan mekanisme
-sebuah \emph{hexagonal grid turn-based strategy game} yaitu Civ6.
+algoritma \emph{state of the art} \emph{deep reinforcement learning} dalam sebuah \emph{environment} yang memiliki skenario combat dan mekanisme
+sebuah \emph{hexagonal grid turn-based strategy game}.
 
 \section{Manfaat}
 \label{sec:manfaat}
 
 Hasil dari penelitian ini diharapkan dapat memberikan contoh implementasi dalam merancang 
-sebuah agen AI menggunakan metode DRL serta memberikan acuan performa beberapa algoritma SOTA DRL kepada game developer atau game AI programmer untuk 
-mengimplementasikan agen berbasis DRL dalam sebuah hexagonal grid turn-based strategy game.
+sebuah agen AI menggunakan metode \emph{deep reinforcement learning} serta memberikan acuan performa beberapa algoritma \emph{state of the art deep reinforcement learning} kepada game developer atau game AI programmer untuk 
+mengimplementasikan agen berbasis \emph{deep reinforcement learning} dalam sebuah hexagonal grid turn-based strategy game.

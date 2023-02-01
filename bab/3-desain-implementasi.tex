@@ -41,8 +41,7 @@ Implementasi ke PettingZoo memudahkan untuk mengintegrasikan \emph{environment} 
 \subsection{Area dan Posisi}
 \emph{Environment} merupakan area \emph{pointy top hexagonal grid} berukuran 8x8. Di tengah area tersebut terdapat sebuah kota.
 \emph{Environment} yang sudah termodifikasi memiliki dua jenis agen yaitu agen \emph{attacker} dan agen \emph{defender}.
-Agen \emph{attacker} memiliki 3 \emph{unit} jarak dekat (\emph{melee}) (\emph{warrior}) dan 2 \emph{unit} jarak jauh (\emph{ranged}) (\emph{slinger}).
-Agen \emph{defender} memiliki 2 \emph{warrior} dan 1 \emph{slinger}.
+Setiap agen memiliki 3 \emph{unit} jarak dekat (\emph{melee}) (\emph{warrior}) dan 2 \emph{unit} jarak jauh (\emph{ranged}) (\emph{slinger}).
 
 Penempatan \emph{unit} agen dilakukan secara acak dengan pembatasan.
 \emph{Unit} agen \emph{attacker} ditempatkan minimal sejauh 5 lantai dari kota di tengah area.
@@ -107,33 +106,57 @@ Berikut adalah attribut dari kota:
 \end{figure}
 
 \subsection{Giliran dan Pergerakan Unit Agen}
-Agen dapat mengkontrol \emph{unit} mereka pada giliran yang sudah ditentukan. 
 \emph{Environment} dimulai dengan giliran agen \emph{attacker}, dilanjutkan oleh giliran kota, dan kemudian
-ke giliran agen \emph{defender} sebelum kembali ke agen \emph{attacker}. 
-Pergerakan dan pemilihan unit oleh agen dilakukan secara sekuensial. Pertama, agen akan memilih unit pertama mereka.
-Agen akan melakukan pergerakan dengan unit yang telah dipilih sampai unit tersebut tidak lagi memiliki \emph{movement points}
-pada giliran tersebut.
-Setelah itu, agen akan berpindah ke unit selanjutnya. Hal ini akan berulang sampai agen tidak lagi memiliki unit yang masih
-mempunyai \emph{movement points}. Jika agen sudah tidak memiliki unit yang masih mempunyai \emph{movement points}
-maka agen akan mengakhiri giliran mereka dan giliran berikutnya akan dimulai. 
-Sebuah \emph{episode} dari \emph{environment} akan berakhir ketika 20 giliran sudah berlalu, kota sudah hancur, atau seluruh \emph{unit}
-milik agen \emph{attacker} mati.
-Berikut flowchart dari pergerakan dan pemilihan sekuensial ini:
+ke giliran agen \emph{defender} sebelum kembali ke agen \emph{attacker}.
+Berikut diagram urutan giliran dalam \emph{environment} ini:
 
 \begin{figure}[H]
   \centering
     % Nama dari file gambar yang diinputkan
-    \includegraphics[scale=0.48]{gambar/unit_sequential_movement.jpg}
+    \includegraphics[scale=0.2]{gambar/turn_diagram.jpg}
     % Keterangan gambar yang diinputkan
-    \caption{\emph{Flowchart} pergerakan dan pemilihan sekuensial unit agen}
+    \caption{Diagram alur giliran agen}
     % Label referensi dari gambar yang diinputkan
-    \label{fig:sequentialMovementFlowchart}
+    \label{fig:turnSequenceDiagram}
+\end{figure}
+
+Agen dapat mengkontrol \emph{unit} mereka pada giliran yang sudah ditentukan.
+Pergerakan dan pemilihan \emph{unit} oleh agen dilakukan secara sekuensial. Pertama, agen akan memilih \emph{unit} pertama mereka.
+Agen akan melakukan pergerakan dengan \emph{unit} yang telah dipilih sampai \emph{unit} tersebut tidak lagi memiliki \emph{movement points}
+pada giliran tersebut.
+Setelah itu, agen akan berpindah ke \emph{unit} selanjutnya. Hal ini akan berulang sampai agen tidak lagi memiliki unit yang masih
+mempunyai \emph{movement points}. Jika agen sudah tidak memiliki \emph{unit} yang masih mempunyai \emph{movement points}
+maka agen akan mengakhiri giliran mereka dan giliran berikutnya akan dimulai.
+Berikut diagram dari pergerakan dan pemilihan sekuensial ini:
+
+\begin{figure}[H]
+  \centering
+    % Nama dari file gambar yang diinputkan
+    \includegraphics[scale=0.33]{gambar/unit_sequential_movement.jpg}
+    % Keterangan gambar yang diinputkan
+    \caption{Diagram pergerakan dan pemilihan sekuensial unit agen}
+    % Label referensi dari gambar yang diinputkan
+    \label{fig:sequentialMovementDiagram}
+\end{figure}
+
+Dalam giliran \emph{city}, jika tidak terdapat setidaknya tiga \emph{unit} agen \emph{attacker} didekat kota tersebut,
+maka kota akan memulihkan 20 \emph{hit points} setiap gilirannya. Hal ini untuk mensimulasikan mekanisme keadaan \emph{siege}
+dalam Civ6. Berikut diagram giliran pada kota:
+
+\begin{figure}[H]
+  \centering
+    % Nama dari file gambar yang diinputkan
+    \includegraphics[scale=0.27]{gambar/city_turn.jpg}
+    % Keterangan gambar yang diinputkan
+    \caption{Diagram giliran kota}
+    % Label referensi dari gambar yang diinputkan
+    \label{fig:cityTurnDiagram}
 \end{figure}
 
 \subsection{Action Space}
 \emph{Action space} merupakan kemungkinan yang dapat diambil oleh agen untuk melakukan sebuah \emph{action}.
 \emph{Action space} yang digunakan dalam \emph{environment} ini adalah berupa 7 \emph{discrete actions}.
-7 \emph{discrete actions} tersebut merupakan 6 sisi dimana unit dapat bergerak ke dan 1 \emph{action} unit tidak bergerak ke manapun.
+7 \emph{discrete actions} tersebut merupakan 6 sisi dimana \emph{unit} dapat bergerak ke dan 1 \emph{action} \emph{unit} tidak bergerak ke manapun.
 
 % input gambar
 \begin{figure}[H]
@@ -146,6 +169,21 @@ Berikut flowchart dari pergerakan dan pemilihan sekuensial ini:
     \label{fig:hex_action}
 \end{figure}
 
+\emph{Unit} yang akan bergerak akan didapatkan nilai koordinat posisinya.
+Dari koordinat posisi $y$ \emph{unit}, ditentukan paritas posisi \emph{unit}: apakah \emph{unit} berada dalam lantai genap atau ganjil.
+\emph{Discrete actions} yang diberikan oleh agen kepada \emph{unit} kemudian akan diterjemahkan ke dalam koordinat lantai tujuan \emph{unit}.
+Terjemahan \emph{discrete actions} yang diterima oleh \emph{unit}, mengikuti gambar \ref{fig:hex_action}:
+
+\begin{itemize}
+  \item 1: Bergerak ke NE
+  \item 2: Bergerak ke E
+  \item 3: Bergerak ke SE
+  \item 4: Bergerak ke SW
+  \item 5: Bergerak ke W
+  \item 6: Bergerak ke NW
+  \item 7: Diam di tempat (IDLE)
+\end{itemize}
+
 \subsection{Observation Space}
 \emph{Observation Space} merupakan kumpulan \emph{state} dalam \emph{environment} yang didapatkan oleh agen saat melakukan observasi.
 Agen dalam \emph{environment} penelitian ini melakukan \emph{complete observation}. 
@@ -153,9 +191,9 @@ Kedua agen mendapatkan informasi \emph{state} yang penuh dan sama saat melakukan
 Seluruh nilai \emph{state} dinormalisasi sehingga nilainya berupa 0 sampai 1.
 Berikut merupakan \emph{state} yang didapatkan oleh agen saat observasi:
 \begin{itemize}
-  \item Jarak seluruh unit dari kota: $x_{1}, y_{1}, \dots x_{n}, y_{n}$
-  \item Nilai HP dari seluruh unit: $HP_{1}, \dots HP_{n}$
-  \item Nilai movement points dari seluruh unit: $MP_{1}, \dots MP_{n}$
+  \item Jarak seluruh \emph{unit} dari kota: $x_{1}, y_{1}, \dots x_{n}, y_{n}$
+  \item Nilai HP dari seluruh \emph{unit}: $HP_{1}, \dots HP_{n}$
+  \item Nilai movement points dari seluruh \emph{unit}: $MP_{1}, \dots MP_{n}$
 \end{itemize}
 
 \subsection{Reward Agen}
@@ -186,15 +224,16 @@ Jika sebuah \emph{unit} agen \emph{attacker} mati atau sebuah giliran telah berl
 Hal ini untuk memaksa agen \emph{attacker} agar menyelesaikan tujuannya secepat mungkin dan meminimalisir kehilangan \emph{unit}.
 
 Agen \emph{defender} yang memiliki tujuan untuk mencoba mencegah agen \emph{attacker} mendapatkan +3 poin ketika sebuah \emph{unit}
-agen \emph{attacker} mati. Tidak diberikan penalti pada agen \emph{defender} ketika unit mereka mati karena pada eksperimen sebelumnya,
+agen \emph{attacker} mati. Tidak diberikan penalti pada agen \emph{defender} ketika \emph{unit} mereka mati karena pada eksperimen sebelumnya,
 hal tersebut membuat agen \emph{defender} terlalu pasif. Kedua agen akan mendapatkan penalti ketika mencoba untuk menggerakan \emph{unit}
 milik mereka keluar dari batas \emph{environment}.
 
 \section{Implementasi Algoritma DRL}
 Implementasi algoritma dalam penelitian ini menggunakan RLlib versi 2.0.0.
 Kami menggunakan RLlib dengan alasan bahwa algoritma yang diimplementasikan dalam \emph{library} ini
-sudah diverifikasi oleh berbagai pihak, sehingga menghindari adanya \emph{bug} pada implementasi manual.
-Alasan kedua adalah kemampuan RLlib untuk diintegrasikan dengan simulator eksternal seperti Unity3D
+merupakan \emph{open source} yang masih aktif dan memiliki banyak kontributor. 
+Penggunaan library tersebut juga mengurangi akan adanya \emph{bug} jika dibandingkan dengan implementasi manual.
+Alasan kedua adalah kemampuan RLlib untuk diintegrasikan dengan simulator eksternal seperti \emph{Unity3D}
 dan \emph{game engine} lainnya \citep{rllibDocumentation}.
 Mengingat bahwa manfaat dari penelitian ini adalah memberi contoh implementasi DRL
 bagi \emph{game developer}.
@@ -203,7 +242,7 @@ menggunakan sebuah \emph{open source library} RL seperti RLlib.
 Terdapat 4 algoritma SOTA DRL yang diimplementasikan dalam \emph{environment} dalam
 eksperimen penelitian ini: DQN, APE-X DQN, PPO, IMPALA. 
 Algoritma-algoritma tersebut dipilih karena mencakup beberapa bidang dari DRL seperti
-on-policy, off-policy, dan distributed learning.
+\emph{policy based learning}, \emph{value based learning}, dan \emph{distributed learning}.
 \emph{Hyperparameter} dari algoritma-algoritma tersebut mengikuti \emph{hyperparameter}
 dasar yang diberikan secara \emph{default} oleh RLlib 2.0.0 dengan beberapa pengecualian:
 \begin{itemize}
@@ -247,7 +286,7 @@ tersendiri yang khusus untuk algoritma tersebut (\emph{specific-configs}).
 
 \subsection{Implementasi DQN}
 DQN yang digunakan dalam implementasi RLlib secara default adalah \emph{Double Dueling} DQN
-dengan PER.
+dengan PER. \emph{Replay buffer} dikompres menggunakan LZ4 untuk mengurangi penggunaan memori.
 
 \begin{figure}[H]
   \centering
@@ -259,48 +298,6 @@ dengan PER.
     \label{fig:rllib_dqn_architecture}
 \end{figure}
 
-\begin{lstlisting}[
-  language=Python,
-  caption={DQN-specific configs},
-  label={lst:dqnSpecificConfigs}
-]
-self.num_atoms = 1
-self.v_min = -10.0
-self.v_max = 10.0
-self.noisy = False
-self.sigma0 = 0.5
-self.dueling = True
-self.hiddens = [256]
-self.double_q = True
-self.n_step = 1
-self.before_learn_on_batch = None
-self.training_intensity = None
-self.td_error_loss_fn = "huber"
-self.categorical_distribution_temperature = 1.0
-
-# Changes to SimpleQConfig's default:
-self.replay_buffer_config = {
-    "type": "MultiAgentPrioritizedReplayBuffer",
-    # Specify prioritized replay by supplying a buffer type that supports
-    # prioritization, for example: MultiAgentPrioritizedReplayBuffer.
-    "prioritized_replay": DEPRECATED_VALUE,
-    # Size of the replay buffer. Note that if async_updates is set,
-    # then each worker will have a replay buffer of this size.
-    "capacity": 50000,
-    "prioritized_replay_alpha": 0.6,
-    # Beta parameter for sampling from prioritized replay buffer.
-    "prioritized_replay_beta": 0.4,
-    # Epsilon to add to the TD errors when updating priorities.
-    "prioritized_replay_eps": 1e-6,
-    # The number of continuous environment steps to replay at once. This may
-    # be set to greater than 1 to support recurrent models.
-    "replay_sequence_length": 1,
-    # Whether to compute priorities on workers.
-    "worker_side_prioritization": False,
-}
-# fmt: on
-\end{lstlisting}
-
 \subsection{Implementasi APE-X DQN}
 Implementasi APE-X DQN dalam RLlib 2.0.0 menggunakan implementasi DQN yang ada dengan
 tambahan \emph{distributed prioritezed experience replay} (APE-X) untuk skalabilitas
@@ -311,93 +308,22 @@ tersebut terganti oleh 3 \emph{rollout\_workers} yang dideklarasikan pada \ref{l
 \begin{figure}[H]
   \centering
     % Nama dari file gambar yang diinputkan
-    \includegraphics[scale=0.6]{gambar/rllib_apex-dqn_architecture.png}
+    \includegraphics[scale=0.56]{gambar/rllib_apex-dqn_architecture.png}
     % Keterangan gambar yang diinputkan
     \caption{Arsitektur APE-X DQN pada RLlib 2.0.0 \citep{rllibDocumentation}}
     % Label referensi dari gambar yang diinputkan
     \label{fig:rllib_apex-dqn_architecture}
 \end{figure}
 
-\begin{lstlisting}[
-  language=Python,
-  caption={Cuplikan kode setting config (hyperparameter)},
-  label={lst:apexDqnSpecificConfigs}
-]
-# APEX-DQN settings overriding DQN ones:
-# .training()
-self.optimizer = merge_dicts(
-    DQNConfig().optimizer, {
-        "max_weight_sync_delay": 400,
-        "num_replay_buffer_shards": 4,
-        "debug": False
-    })
-self.n_step = 3
-self.train_batch_size = 512
-self.target_network_update_freq = 500000
-self.training_intensity = 1
-# Number of timesteps to collect from rollout workers before we start
-# sampling from replay buffers for learning. Whether we count this in agent
-# steps  or environment steps depends on config["multiagent"]["count_steps_by"].
-self.num_steps_sampled_before_learning_starts = 50000
-
-# max number of inflight requests to each sampling worker
-# see the AsyncRequestsManager class for more details
-# Tuning these values is important when running experimens with large sample
-# batches. If the sample batches are large in size, then there is the risk that
-# the object store may fill up, causing the store to spill objects to disk.
-# This can cause any asynchronous requests to become very slow, making your
-# experiment run slowly. You can inspect the object store during your
-# experiment via a call to ray memory on your headnode, and by using the ray
-# dashboard. If you're seeing that the object store is filling up, turn down
-# the number of remote requests in flight, or enable compression in your
-# experiment of timesteps.
-self.max_requests_in_flight_per_sampler_worker = 2
-self.max_requests_in_flight_per_replay_worker = float("inf")
-self.timeout_s_sampler_manager = 0.0
-self.timeout_s_replay_manager = 0.0
-# APEX-DQN is using a distributed (non local) replay buffer.
-self.replay_buffer_config = {
-    "no_local_replay_buffer": True,
-    # Specify prioritized replay by supplying a buffer type that supports
-    # prioritization
-    "type": "MultiAgentPrioritizedReplayBuffer",
-    "capacity": 2000000,
-    # Alpha parameter for prioritized replay buffer.
-    "prioritized_replay_alpha": 0.6,
-    # Beta parameter for sampling from prioritized replay buffer.
-    "prioritized_replay_beta": 0.4,
-    # Epsilon to add to the TD errors when updating priorities.
-    "prioritized_replay_eps": 1e-6,
-    # Whether all shards of the replay buffer must be co-located
-    # with the learner process (running the execution plan).
-    # This is preferred b/c the learner process should have quick
-    # access to the data from the buffer shards, avoiding network
-    # traffic each time samples from the buffer(s) are drawn.
-    # Set this to False for relaxing this constraint and allowing
-    # replay shards to be created on node(s) other than the one
-    # on which the learner is located.
-    "replay_buffer_shards_colocated_with_driver": True,
-    "worker_side_prioritization": True,
-    # Deprecated key.
-    "prioritized_replay": DEPRECATED_VALUE,
-}
-
-# .rollouts()
-self.num_workers = 32
-self.rollout_fragment_length = 50
-self.exploration_config = {
-    "type": "PerWorkerEpsilonGreedy",
-}
-
-# .resources()
-self.num_gpus = 1
-
-# .reporting()
-self.min_time_s_per_iteration = 30
-self.min_sample_timesteps_per_iteration = 25000
-
-# fmt: on
-\end{lstlisting}
+\begin{figure}[H]
+  \centering
+    % Nama dari file gambar yang diinputkan
+    \includegraphics[scale=0.5]{gambar/apex_actor_learner_algorithm.png}
+    % Keterangan gambar yang diinputkan
+    \caption{Algoritma \emph{actor} dan \emph{learner} APEX DQN}
+    % Label referensi dari gambar yang diinputkan
+    \label{fig:apexActorLearnerAlgorithm}
+\end{figure}
 
 \subsection{Implementasi PPO}
 Implementasi PPO dari RLlib 2.0.0 menggunakan \emph{clipped objective} dan \emph{KL-penalty}.
@@ -414,40 +340,10 @@ dari \emph{host memory}, sehingga performa lebih baik dari implementasi secara \
     \label{fig:rllib_ppo_architecture}
 \end{figure}
 
-\begin{lstlisting}[
-  language=Python,
-  caption={PPO-specific configs},
-  label={lst:ppoSpecificConfigs}
-]
-# PPO specific settings:
-self.lr_schedule = None
-self.use_critic = True
-self.use_gae = True
-self.lambda_ = 1.0
-self.kl_coeff = 0.2
-self.sgd_minibatch_size = 128
-self.num_sgd_iter = 30
-self.shuffle_sequences = True
-self.vf_loss_coeff = 1.0
-self.entropy_coeff = 0.0
-self.entropy_coeff_schedule = None
-self.clip_param = 0.3
-self.vf_clip_param = 10.0
-self.grad_clip = None
-self.kl_target = 0.01
-
-# Override some of AlgorithmConfig's default values with PPO-specific values.
-self.rollout_fragment_length = 200
-self.train_batch_size = 4000
-self.lr = 5e-5
-self.model["vf_share_layers"] = False
-    
-\end{lstlisting}
-
 \subsection{Implementasi IMPALA}
 Implementasi IMPALA dari RLlib 2.0.0 menggunakan referensi kode V-trace milik DeepMind \citep{impala}.
 Seperti APE-X DQN, IMPALA merupakan sebuah arsitektur terdistribusi. Arsitektur IMPALA juga mirip dengan PPO.
-Akan tetapi, PPO menggunakan \emph{synchronous broadcast}, sedangkan IMPALA menggunakan \emph{asynchronous broadcast}.
+Akan tetapi, PPO menggunakan \emph{synchronous broadcast / sampling}, sedangkan IMPALA menggunakan \emph{asynchronous broadcast / sampling} dan \emph{replay buffer}.
 
 \begin{figure}[H]
   \centering
@@ -459,50 +355,81 @@ Akan tetapi, PPO menggunakan \emph{synchronous broadcast}, sedangkan IMPALA meng
     \label{fig:rllib_impala_architecture}
 \end{figure}
 
-\begin{lstlisting}[
-  language=Python,
-  caption={IMPALA-specific configs},
-  label={lst:impalaSpecificConfigs}
-]
-# IMPALA specific settings:
-self.vtrace = True
-self.vtrace_clip_rho_threshold = 1.0
-self.vtrace_clip_pg_rho_threshold = 1.0
-self.vtrace_drop_last_ts = True
-self.num_multi_gpu_tower_stacks = 1
-self.minibatch_buffer_size = 1
-self.num_sgd_iter = 1
-self.replay_proportion = 0.0
-self.replay_ratio = ((1 / self.replay_proportion)
-                     if self.replay_proportion > 0 else 0.0)
-self.replay_buffer_num_slots = 0
-self.learner_queue_size = 16
-self.learner_queue_timeout = 300
-self.max_requests_in_flight_per_sampler_worker = 2
-self.max_requests_in_flight_per_aggregator_worker = 2
-self.timeout_s_sampler_manager = 0.0
-self.timeout_s_aggregator_manager = 0.0
-self.broadcast_interval = 1
-self.num_aggregation_workers = 0
-self.grad_clip = 40.0
-self.opt_type = "adam"
-self.lr_schedule = None
-self.decay = 0.99
-self.momentum = 0.0
-self.epsilon = 0.1
-self.vf_loss_coeff = 0.5
-self.entropy_coeff = 0.01
-self.entropy_coeff_schedule = None
-self._separate_vf_optimizer = False
-self._lr_vf = 0.0005
-self.after_train_step = None
+\section{Tahap Eksperimen}
+Dalam eksperimen, digunakan beberapa Tahap untuk \emph{training} dan \emph{testing} performa agen.
+Tahap pertama adalah \emph{training}, dilanjutkan dengan evaluasi performa antar generasi agen, dan terakhir
+evaluasi pada skenario \emph{environment} lebih besar.
 
-# Override some of AlgorithmConfig's default values with ARS-specific values.
-self.rollout_fragment_length = 50
-self.train_batch_size = 500
-self.num_workers = 2
-self.num_gpus = 1
-self.lr = 0.0005
-self.min_time_s_per_iteration = 10
-    
-\end{lstlisting}
+\subsection{Training}
+Training dilakukan dengan skenario \emph{environment} yang mengunggulkan agen \emph{attacker}.
+Dalam skenario ini, agen \emph{attacker} memiliki jumlah \emph{unit} yang lebih banyak dari agen \emph{defender}.
+Agen \emph{attacker} memiliki tiga \emph{unit} \emph{warrior} dan dua \emph{unit} \emph{slinger}.
+Sedangkan agen \emph{defender} memiliki dua \emph{unit} \emph{warrior} dan satu \emph{unit} \emph{slinger}.
+Dalam skenario ini, agen \emph{defender} diharapkan dapat menghancurkan kota secara konsisten, dengan keunggulan yang didapatkan oleh agen tersebut.
+
+Performa agen \emph{attacker} juga akan lebih mudah dievaluasi dengan skenario ini.
+Nilai \emph{reward} untuk menghancurkan kota memiliki nilai yang sangat besar: 20 poin, sehingga jika agen \emph{attacker}
+dapat secara konsisten menghancurkan kota, nilai total \emph{reward} yang didapatkan akan jauh lebih banyak dibandingkan
+jika agen \emph{attacker} gagal menghancurkan kota.
+
+Setiap satu \emph{environment step}, sebuah agen melakukan satu pergerakan terhadap sebuah \emph{unit} miliknya.
+Training dilakukan selama 100 juta \emph{total environment steps}.
+Angka ini dipilih karena merupakan batas atas untuk menggunakan APEX DQN dengan spesifikasi PC ini.
+APEX DQN akan membutuhkan RAM yang lebih dari 32GB ketika dijalankan lebih dari 100 juta \emph{total environment steps}.
+Kami rasa, 100 juta \emph{total environment steps} juga lebih dari cukup untuk melakukan konvergensi pada seluruh algoritma
+dalam \emph{environment} ini.
+
+\begin{figure}[H]
+  \centering
+    % Nama dari file gambar yang diinputkan
+    \includegraphics[scale=0.55]{gambar/training_process.png}
+    % Keterangan gambar yang diinputkan
+    \caption{Proses training pada algoritma DQN}
+    % Label referensi dari gambar yang diinputkan
+    \label{fig:trainingProcess}
+\end{figure}
+
+Hasil dari training ini merupakan beberapa generasi nilai bobot agen dari setiap algoritma dan nilai rata-rata \emph{rewards}
+agen \emph{defender} dan \emph{attacker} dari setiap algoritma.
+Nilai bobot beberapa generasi tersebut akan digunakan untuk proses evaluasi
+
+\subsection{Evaluasi Antar Generasi Algoritma}
+Didapatkan beberapa generasi yang dihasilkan selama proses \emph{training}. 
+Dari generasi paling awal hingga generasi pada saat proses \emph{training} berakhir.
+Secara umum, generasi yang paling akhir merupakan generasi yang memiliki performa paling baik.
+Namun, tidak menutup kemungkinan adanya \emph{overfitting} yang terjadi pada generasi agen yang lebih akhir.
+
+Pengujian antar generasi dilakukan selama 100 episode.
+Dimana satu episode merupakan \emph{environment} yang sudah mencapai 20 giliran atau tujuan dari salah satu agen terpenuhi.
+Generasi yang diambil merupakan 4 generasi yang dihasilkan dari training selama 10 juta \emph{total environment steps},
+masing masing meliputi satu per empat bagian dari \emph{total environment steps} tersebut.
+Hasil bobot disimpan berdasarkan iterasi \emph{training}.
+Karena total iterasi \emph{training} setiap algoritma berbeda beda, maka berikut iterasi training yang diambil pada setiap algoritma:
+\begin{itemize}
+  \item DQN: iterasi 600, 1200, 1700, dan 2300
+  \item APEX DQN: iterasi 100, 200, 300, dan 400
+  \item PPO: 600, 1200, 1800, dan 2500s
+  \item IMPALA: iterasi 200, 400, 600, dan 755
+\end{itemize}
+
+Evaluasi dilakukan secara urut. 
+Dimulai dari generasi pertama agen \emph{attacker} melawan generasi pertama agen \emph{defender},
+generasi pertama agen \emph{attacker} melawan generasi kedua agen \emph{defender}, 
+dan seterusnya sampai generasi keempat agen \emph{attacker} melawan generasi keempat agen \emph{defender}.
+Hasil dari evaluasi ini berupa nilai \emph{rewards} agen \emph{attacker} dan \emph{defender} dari setiap algoritma.
+
+\subsection{Evaluasi dengan Environment Lebih Luas}
+Untuk menguji adaptasi agen terhadap bentuk \emph{environment} lain, dilakukan evaluasi dengan skenario lain. 
+Pengujian skenario dilakukan selama 100 episode untuk setiap generasi algoritma.
+Skenario yang akan diujicobakan berukuran 16x16. 
+Hasil dari pengujian adalah nilai \emph{reward} yang didapatkan oleh kedua agen pada setiap generasi.
+
+\begin{figure}[H]
+  \centering
+    % Nama dari file gambar yang diinputkan
+    \includegraphics[scale=0.4]{gambar/16x16_env.jpg}
+    % Keterangan gambar yang diinputkan
+    \caption{\emph{Render environment} dengan ukuran 16x16.}
+    % Label referensi dari gambar yang diinputkan
+    \label{fig:16x16Environment}
+\end{figure}

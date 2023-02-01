@@ -6,17 +6,77 @@
 \section{Penelitian Terdahulu}
 \label{sec:penelitianterdahulu}
 
-Penelitian-penelitian sebelumnya menggunakan beberapa metode AI untuk menyelesaikan masalah ini. Sebagian besar dari penelitian-penelitian sebelumnya berusaha untuk memperbaiki algoritma AI di game strategi seperti seri Civilization dalam sisi pembangunan kota atau ekonomi dalam game strategi. Namun, dalam sisi combat untuk game strategi masih belum diteliti.
+Penelitian-penelitian sebelumnya menggunakan beberapa metode AI untuk menyelesaikan masalah ini. 
+Sebagian besar dari penelitian-penelitian sebelumnya berusaha untuk memperbaiki algoritma AI di game strategi seperti seri Civilization dalam sisi pembangunan kota atau ekonomi dalam game strategi. 
+Namun, dalam sisi combat untuk game strategi masih belum diteliti.
 
-I. Athaillah, S. M. S. Nugroho, dan M. Hariadi menggunakan Non-dominated Sorting Genetic Algorithm II (NGSA II) untuk optimasi pemilihan distrik kota dalam Civ6. Dibandingkan dengan metode AI yang ada dalam game tersebut, agen AI dalam simulasi penelitian ini dapat memberikan pemilihan distrik kota yang lebih optimal. Penelitian yang dilakukan oleh I. Athaillah, et al hanya berfokus pada pemilihan distrik dalam sebuah kota. Pemilihan distrik berpengaruh terhadap perkembangan ekonomi pemain. Metode NGSA II yang digunakan kurang cukup untuk mengatasi permasalahan dalam combat untuk AI. 
+I. Athaillah, S. M. S. Nugroho, dan M. Hariadi menggunakan Non-dominated Sorting Genetic Algorithm II (NGSA II) untuk optimasi pemilihan distrik kota dalam Civ6. Dibandingkan dengan metode AI yang ada dalam game tersebut, agen AI dalam simulasi penelitian ini dapat memberikan pemilihan distrik kota yang lebih optimal. Penelitian yang dilakukan oleh I. Athaillah, et al hanya berfokus pada pemilihan distrik dalam sebuah kota. Pemilihan distrik berpengaruh terhadap perkembangan ekonomi pemain. 
+Metode NGSA II yang digunakan kurang cukup untuk mengatasi permasalahan dalam combat untuk AI. 
 
-S. Wender dan I. Watson, menggunakan metode \emph{Q-Learning} untuk pemilihan bangunan kota dalam game Civilization IV. Performa agen AI dalam penelitian ini didapatkan lebih baik dibandingkan agen AI dalam game tersebut.
+S. Wender dan I. Watson, menggunakan metode \emph{Q-Learning} untuk pemilihan bangunan kota dalam game Civilization IV. 
+Performa agen AI dalam penelitian ini didapatkan lebih baik dibandingkan agen AI dalam game tersebut.
 
-C. Amato dan G. Shani juga menggunakan sebuah metode \emph{Q-Learning} berupa \emph{Dyna-Q} dalam Civilization IV. Agen dalam penelitian ini didapatkan dapat beradaptasi terhadap lawan agen AI yang menggunakan \emph{fixed policy}.
+C. Amato dan G. Shani juga menggunakan sebuah metode \emph{Q-Learning} berupa \emph{Dyna-Q} dalam Civilization IV. 
+Agen dalam penelitian ini didapatkan dapat beradaptasi terhadap lawan agen AI yang menggunakan \emph{fixed policy}.
 
-Metode Reinforcement Learning yang digunakan oleh C. Amato dan G. Shani \citep{civ4RL}, serta S. Wender dan I. Watson kami rasa mencukupi untuk penelitian ini. Akan tetapi, game strategi Civilization IV yang dijadikan objek penelitian menggunakan desain game yang tidak lagi umum digunakan. Civilization IV menggunakan rectangular grid dibandingkan hexagonal grid yang banyak digunakan oleh game-game strategi berbasis giliran saat ini. Di dalam Civilization IV, tidak terdapat pembatasan \emph{unit} per tile yang banyak digunakan oleh game strategi saat ini. Tanpa batasan ini, pemain dapat melakukan \emph{doomstacking} dimana pemain dapat mengelompokan pasukan dalam satu tile sebanyak-banyaknya. Adanya \emph{doomstacking} membatasi pilihan strategi yang optimal dalam combat.
+Metode Reinforcement Learning yang digunakan oleh C. Amato dan G. Shani \citep{civ4RL}, serta S. Wender dan I. Watson kami rasa mencukupi untuk penelitian ini. Akan tetapi, game strategi Civilization IV yang dijadikan objek penelitian menggunakan desain game yang tidak lagi umum digunakan. Civilization IV menggunakan rectangular grid dibandingkan hexagonal grid yang banyak digunakan oleh game-game strategi berbasis giliran saat ini. Di dalam Civilization IV, tidak terdapat pembatasan \emph{unit} per tile yang banyak digunakan oleh game strategi saat ini. Tanpa batasan ini, pemain dapat melakukan \emph{doomstacking} dimana pemain dapat mengelompokan pasukan dalam satu tile sebanyak-banyaknya. 
+Adanya \emph{doomstacking} membatasi pilihan strategi yang optimal dalam combat.
 
 A. Sestini, et al \citep{deepCrawl} mengembangkan sebuah game bernama DeepCrawl yang menggunakan Deep Reinforcement Learning (DRL) sebagai metode untuk mengembangkan AI dalam game tersebut. AI yang dilatih dalam penelitian ini dapat memberikan tantangan yang cukup bagi banyak pemain.[5] Penggunaan DRL seperti yang digunakan oleh A. Sestini, et al pada game DeepCrawl merupakan metode yang paling optimal dalam game strategi. Penggunaan Neural Network (NN) dapat diskala untuk area game yang besar. Namun, DeepCrawl merupakan jenis game Roguelike yang sangat berbeda dan minim dibandingkan dengan game strategi 4X.
+
+\section{Metode AI dalam Hexagonal Grid Turn-based Strategy Games}
+Beberapa metode diperlukan untuk membangun sebuah agen AI dalam bermain \emph{turn-based strategy games}.
+Metode-metode tersebut mirip dengan \emph{real-time strategy games}, seperti \emph{pathfinding}, \emph{decision making}, \emph{tactical/strategical AI},
+dan \emph{group movement} \citep{artificialInteligenceForGames}.
+
+\begin{figure}[H]
+  \centering
+    % Nama dari file gambar yang diinputkan
+    \includegraphics[scale=1.2]{gambar/ai_architecture_for_turn-based_strategy_games.jpg}
+    % Keterangan gambar yang diinputkan
+    \caption{Contoh arsitektur AI dalam \emph{turn-based strategy games} \citep{artificialInteligenceForGames}.}
+    % Label referensi dari gambar yang diinputkan
+    \label{fig:turn-basedStrategyGamesAIArch}
+\end{figure}
+
+\subsection{Pathfinding}
+Pathfinding merupakan salah satu metode paling penting dalam game strategi.
+Dalam game yang menggunakan \emph{hexagonal grid}, lantai berbentuk segi enam merepresentasikan dunia dalam game tersebut.
+Algoritma yang umum digunakan dalam \emph{pathfinding} merupakan algoritma A*.
+
+\begin{figure}[H]
+  \centering
+    % Nama dari file gambar yang diinputkan
+    \includegraphics[scale=1]{gambar/pathfinding_hexagonal_grids.jpg}
+    % Keterangan gambar yang diinputkan
+    \caption{Pathfinding dalam \emph{hexagonal grid} menggunakan A* dengan \emph{Manhattan-distance heuristic} \citep{AI4X}.}
+    % Label referensi dari gambar yang diinputkan
+    \label{fig:pathfindingHexagonalGrid}
+\end{figure}
+
+Untuk menentukan jarak terdekat, A* menggunakan rumus prioritas yang ditunjukan pada persamaan berikut:
+\begin{equation}
+  f(n) = g(n) + h(n)
+\end{equation}
+
+Dimana $f(n)$ merupakan prioritas yang didapatkan, $g(n)$ adalah langkah yang diperlukan untuk mencapai sebuah lantai, dan $h(n)$
+merupakan nilai \emph{heuristic} tambahan. Jika nilai $h(n) = 0$ maka A* akan menjadi algoritma \emph{Djikstra}.
+\emph{Djikstra} merupakan asal algoritma A* \citep{artificialInteligenceForGames}.
+
+\subsection{Decision Making}
+Dalam game strategi, agen AI perlu untuk mengambil keputusan untuk melakukan sebuah aksi dalam game tersebut.
+Agen AI akan mengambil keputusan berdasarkan pengetahuan internal (keadaan internal agen: \emph{health}, tujuan, dsb) dan eksternal 
+(posisi pemain lain, keadaan lingkungan, dsb) sebagai input,
+yang kemudian diproses menjadi \emph{action request} sebagai output yang mempengaruhi keadaan dalam game.
+Terdapat banyak metode yang digunakan untuk melakukan \emph{decision making}. Beberapa metode yang populer adalah
+\emph{Finite State Machines}, \emph{Hierarchical State Machines}, \emph{Decision/Behavior Trees}, \emph{Fuzzy Logic},
+\emph{Rule Based AI} \citep{artificialInteligenceForGames}.
+
+\subsection{Tactical dan Strategic AI}
+Berbeda dengan \emph{decision making} yang hanya berlaku untuk sebuah karakter, 
+\emph{Tactical} dan \emph{Strategical} AI meliputi melakukan deduksi secara taktikal untuk mengambil keputusan dan melakukan 
+koordinasi dengan banyak karakter. Beberapa metode telah digunakan untuk melakukan hal ini: \emph{Tactical Pathfinding},
+\emph{Goal-Oriented Action Planning} (GOAP), \emph{Iterative Deeping A*} (IDA), \emph{Hierarchical Task Networks}, dan lain-lain \citep{artificialInteligenceForGames}.
 
 \section{Seri Game Civilization}
 \emph{Civilization} merupakan seri \emph{turn-based strategy games} yang dirilis pada 1991. 
@@ -29,7 +89,7 @@ berupa manusia maupun AI.
 \begin{figure}[H]
   \centering
     % Nama dari file gambar yang diinputkan
-    \includegraphics[scale=1]{gambar/Civ_1_negotiation.png}
+    \includegraphics[scale=1.1]{gambar/Civ_1_negotiation.png}
     % Keterangan gambar yang diinputkan
     \caption{Layar negosiasi dalam \emph{Civilization} I.}
     % Label referensi dari gambar yang diinputkan
@@ -39,7 +99,8 @@ berupa manusia maupun AI.
 \emph{Civilization V} (Civ5) merupakan game pertama dalam seri ini untuk menggunakan \emph{hexagonal tile},
 berbeda dengan game-game sebelumnya yang menggunakan \emph{square tile}. Civ5 juga membatasi posisi unit dengan peraturan \emph{one-unit-per-tile}
 (1-UPT), dimana sebuah \emph{tile} hanya boleh ditempati oleh sebuah \emph{unit}.
-Civ6 adalah game terbaru dalam seri ini. Dirilis pada 2016, Civ6 masih mendapatkan konten baru pada saat penelitian ini ditulis.
+Civ6 adalah game terbaru dalam seri ini. Sama dengan Civ5, Civ6 juga menggunakan \emph{hexagonal tile} serta memiliki aturan 1-UPT.
+Dirilis pada 2016, Civ6 masih mendapatkan \emph{update} berupa konten baru sampai saat penelitian ini ditulis.
 
 \section{Dasar Mekanisme Combat dalam Civilization VI}
 Civ6 menggunakan \emph{hexagonal grid} yang terdiri dari \emph{hex tiles}, atau \emph{hexes}, sebagai basis pergerakan dan peletakan \emph{unit}. 
@@ -63,27 +124,19 @@ CS digunakan ketika \emph{unit} menyerang \emph{unit} lain secara dekat, RS digu
 \emph{unit} tersebut berada. Ketika sebuah unit memasuki ZoC milik unit lawan, unit tersebut tidak dapat bergerak ke lantai lain, namun
 unit tersebut dapat melakukan aksi seperti menyerang dan sebagainya.
 
-\section{Machine Learning}
-\emph{Machine Learning} (ML) secara definisi merupakan suatu bidang ilmu komputer yang berkembang dari studi pengenalan pola dan teori pembelajaran komputasional dalam kecerdasan buatan. 
-Prediksi dataset ML dibangun dari sebuah model yang mendapatkan contoh input untuk membuat prediksi berbasis data daripada mengikuti sebuah instruksi program statis \citep{machineL}.
-
-\section{Reinforcment Learning}
+\section{Deep Reinforcement Learning}
 \emph{Reinforcment Learning} (RL) merupakan pembelajaran dimana sebuah pembelajar (\emph{learner}) tidak diberitahu
 secara eksplisit akan apa yang harus dilakukan, tetapi harus menemukan aksi (\emph{actions}) 
 manakah yang akan memberikan imbalan (\emph{reward}) terbesar. 
-RL berbeda akan paradigma ML yang lain seperti \emph{supervised learning} atau \emph{unsupervised learning} \citep{reinforcmentL}. 
+RL berbeda akan paradigma \emph{machine learning} yang lain seperti \emph{supervised learning} atau \emph{unsupervised learning} \citep{reinforcmentL}. 
 
-\section{Deep Learning}
-\emph{Deep Learning} merupakan bentuk dari \emph{machine learning} yang memungkinkan komputer untuk mempelajari pengalamannya dan memahami dunia secara konsep hierarkis. 
-Konsep hierarkis ini memungkinkan komputer untuk mempelajari konsep rumit dengan membangun konsep tersebut dari konsep-konsep yang lebih sederhana \citep{deepL}.
-
-\section{Deep Reinforcement Learning}
-\emph{Deep Reinforcement Learning} (DRL) merupakan jenis dari \emph{Reinforcement Learning} (RL), dengan \emph{deep neural network} sebagai representasi state
-dan/atau fungsi pendekatan untuk fungsi \emph{value}, \emph{policy}, \emph{transition model}, atau fungsi \emph{reward} \citep{deepRL}.
+\emph{Deep Reinforcement Learning} (DRL) menggabungkan RL dengan \emph{deep learning}. DRL 
+menggunakan \emph{deep neural network} sebagai representasi state dan/atau fungsi pendekatan untuk fungsi \emph{value}, 
+\emph{policy}, \emph{transition model}, atau fungsi \emph{reward} \citep{deepRL}.
 Sebuah environment game umum digunakan sebagai bidang eksperimentasi DRL.
-\emph{DeepMind} membuat sebuah model DRL (\emph{AlphaStar}) yang dapat mengalahkan pemain professional dalam game \emph{Starcraft 2}, membuktikan bahwa DRL dapat digunakan untuk membangun agen AI yang mumpuni dalam sebuah game strategi \citep{alphaStar}.
+\emph{DeepMind} membuat sebuah model DRL (\emph{AlphaStar}) yang dapat mengalahkan pemain professional dalam game \emph{Starcraft 2}, membuktikan bahwa DRL dapat digunakan untuk membangun agen AI yang \emph{human-level} dalam sebuah game strategi \citep{alphaStar}.
 \emph{OpenAI} juga mempresentasikan sebuah model yang dapat mengalahkan pemain professional dalam sebuah game \emph{Dota 2} \citep{openaiDota2}.
-Penelitian-penelitian tersebut telah membuktikan kemampuan DRL dalam membuat sebuah agen AI yang mumpuni dalam game strategi.
+Penelitian-penelitian tersebut telah mengimplementasikan DRL sebagai sebuah agen dalam game strategi.
 
 \section{Deep Q-Learning Network}
 Mnih, et al mengenalkan \emph{Deep Q-Learning Network} (DQN)\citep{deepQN} sebagai pencetus pertama metode \emph{Deep Reinforcement Learning}. DQN menggunakan \emph{neural network} untuk memperkirakan nilai optimal dari fungsi \emph{action value} pada \emph{Q-Learning}.
@@ -133,7 +186,7 @@ saat pembelajaran \cite{doubleQLearning}.
 \begin{figure}[H]
   \centering
     % Nama dari file gambar yang diinputkan
-    \includegraphics[scale=0.6]{gambar/ddqn_algorithm.png}
+    \includegraphics[scale=0.7]{gambar/ddqn_algorithm.png}
     % Keterangan gambar yang diinputkan
     \caption{Algoritma \emph{Double Deep Q-Learning} \citep{doubleDQN}.}
     % Label referensi dari gambar yang diinputkan
@@ -259,7 +312,7 @@ GPU \emph{learner} pusat melakukan \emph{stochastic gradient descent} (SGD) pada
 \emph{V-trace} merupakan sebuah algoritma RL \emph{off-policy actor-critic} yang mengurangi \emph{lag} dari \emph{actions} yang dibuat oleh \emph{actors}
 dan saat \emph{learner} melakukan estimasi \emph{gradient}. 
 Pada sebuah \emph{trajectory} $(x_{t}, a_{t}, r_{t})^{t=s+n}_{t=s}$ yang dibuat oleh \emph{actor} yang mengikut sebuah \emph{policy} $\mu$.
-Target \emph{V-trace} pada \emph{$n$-steps} untuk $V(x_{s})$, dnegan nilai perkiraan pada \emph{state} $x_{s}$ di definisikan sebagai:
+Target \emph{V-trace} pada \emph{$n$-steps} untuk $V(x_{s})$, dengan nilai perkiraan pada \emph{state} $x_{s}$ di definisikan sebagai:
 \begin{equation}
   v_{s} \stackrel{\text{def}}{=} V(x_{s}) + \sum^{s+n-1}_{t=s} \gamma^{t-s} \left(\Pi^{t-1}_{i=s}ci\right) \delta_{t}V
 \end{equation}
@@ -274,7 +327,7 @@ Oleh karena itu, IMPALA menggunakan \emph{V-trace off policy actor critic}
 \begin{figure}[H]
   \centering
     % Nama dari file gambar yang diinputkan
-    \includegraphics[scale=0.8]{gambar/impala_worker.png}
+    \includegraphics[scale=0.6]{gambar/impala_worker.png}
     % Keterangan gambar yang diinputkan
     \caption{Kiri: Sebuah learner. Setiap \emph{actor} menghasilkan \emph{trajectories} dan mengirimkannya melalui sebuah \emph{queue} kepada \emph{learner}.
     Sebelum memulai \emph{trajectory} selanjutnya, \emph{actor} menerima \emph{policy parameters} terbaru dari \emph{learner}.
@@ -336,3 +389,27 @@ algoritma RL berskala dan performa tinggi untuk komputasi terdistribusi \citep{r
 RLlib menawarkan beberapa koleksi dan referensi algoritma dan juga abstraksi \emph{scalable} untuk memudahkan
 pembuatan algoritma baru. RLlib mendukung beberapa \emph{library} \emph{environment} seperti \emph{OpenAI Gym},
 \emph{PettingZoo}, dan juga simulator eksternal seperti \emph{Unity3D} atau \emph{game engine} lainnya \citep{rllibDocumentation}.
+
+\begin{lstlisting}[
+  language=Python,
+  caption={Contoh penggunaan algoritma PPO dengan RLlib}
+  label={lst:rllibExample}
+]
+  from ray.rllib.algorithms.ppo import PPOConfig
+
+  config = (  # 1. Configure the algorithm,
+      PPOConfig()
+      .environment("Taxi-v3")
+      .rollouts(num_rollout_workers=2)
+      .framework("tf2")
+      .training(model={"fcnet_hiddens": [64, 64]})
+      .evaluation(evaluation_num_workers=1)
+  )
+
+  algo = config.build()  # 2. build the algorithm,
+
+  for _ in range(5):
+      print(algo.train())  # 3. train it,
+
+  algo.evaluate()  # 4. and evaluate it.
+\end{lstlisting}

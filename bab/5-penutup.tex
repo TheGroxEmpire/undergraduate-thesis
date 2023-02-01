@@ -6,7 +6,7 @@
 \section{Kesimpulan}
 \label{sec:kesimpulan}
 
-Dalam penelitian telah diimplementasikan beberapa algoritma SOTA DRL dalam \emph{environment}
+Dalam penelitian telah diimplementasikan beberapa algoritma \emph{state of the art} \emph{deep reinforcement learning} dalam \emph{environment}
 yang mengikuti mekanisme \emph{combat} dalam Civ6.
 Dalam \emph{environment} ini, terdapat dua agen: agen \emph{attacker} dan agen \emph{defender}.
 Kedua agen mempunyai tujuan yang berbeda \emph{asymmetrical} dan saling berlawanan \emph{adversarial}.
@@ -14,15 +14,15 @@ Dari eksperimen yang dilakukan dengan algoritma-algoritma tersebut, didapatkan:
 
 \begin{enumerate}[nolistsep]
 
-  \item DRL dapat menghasilkan agen yang optimal dalam \emph{environment} yang mensimulasi mekanisme \emph{combat}
-  Civ6.
+  \item \emph{Deep reinforcement learning} dapat digunakan untuk membuat agen yang cukup dalam \emph{environment} yang mensimulasi mekanisme \emph{combat}
+  Civ6 secara terbatas.
 
-  \item APE-X DQN merupakan algoritma yang paling mumpuni. Agen \emph{attacker} dengan APE-X DQN mampu
+  \item \emph{Distributed Prioritized Experience Replay Deep Q-Networks} merupakan algoritma yang memiliki reward paling tinggi saat \emph{training}. Agen \emph{attacker} dengan APE-X DQN mampu
   menghancurkan kota secara konsisten sebelum 2 juta \emph{environment steps}.
-  Agen \emph{defender} dengan APE-X DQN juga merupakan salah satu algoritma yang paling optimal
-  dibanding algoritma lain.
+  Agen \emph{defender} dengan \emph{Distributed Prioritized Experience Replay Deep Q-Networks} juga merupakan algoritma yang paling optimal
+  dibanding algoritma lain saat \emph{training}.
 
-  \item APE-X DQN menggunakan RAM dan CPU terbanyak dengan penggunaan CPU sebanyak 79.95\% dan penggunaan
+  \item Saat training \emph{Distributed Prioritized Experience Replay Deep Q-Networks} menggunakan RAM dan CPU terbanyak dengan penggunaan CPU sebanyak 79.95\% dan penggunaan
   RAM sebanyak 82.3\%.
 
 \end{enumerate}
