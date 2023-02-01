@@ -466,9 +466,12 @@ Kestabilan dari nilai juga masih terlihat dalam evaluasi ini.
 Generasi terbaik untuk agen \emph{attacker} IMPALA tidak cukup jelas.
 Akan tetapi generasi 1 merupakan generasi paling buruk.
 Untuk agen \emph{defender}, generasi 1 merupakan generasi terbaik.
+Secara konsisten, generasi 1 mempunyai poin lebih bayak daripada generasi lainnya.
+Hal ini sangat menarik, karena pada umumnya generasi akhir mengungguli generasi sebelumnya.
+Adanya kemungkinan \emph{overfitting} oleh agen, sehingga agen terlalu terpana terhadap beberap episode dan tidak dapat beradaptasi dengan agen yang baru.
 Generasi lainnya memiliki nilai yang mirip antara satu dengan yang lain.
 
-\section{Masalah Saat Evaluasi APE-X DQN dan PPO}
+\section{Hambatan Saat Evaluasi}
 Pada saat evaluasi, algoritma APE-X DQN dan PPO tidak dapat sepenuhnya dijalankan pada seluruh generasi.
 Generasi yang bermasalah adalah generasi 2 dan ke atas agen \emph{defender} untuk kedua algoritma.
 Algoritma tersebut dapat berjalan, hanya saja waktu inferensi pada generasi tersebut yang tidak seperti biasanya.
@@ -478,8 +481,52 @@ Maka satu algoritma setidaknya akan menyelesaikan evaluasi dalam waktu kurang da
 Namun dalam menjalankan evaluasi agen \emph{attacker} APE-X DQN dan PPO generasi 2, evaluasi berjalan selama lebih dari 8 jam.
 Sedangkan progress yang didapatkan dalam 8 jam tersebut nihil.
 
-M dicoba seperti menurunkan jumlah iterasi menjadi satu episode per generasi tidak sepenuhnya menyelesaikan masalah ini.
+Telah dicoba menurunkan jumlah iterasi evaluasi dari 100 episode per generasi menjadi satu episode per generasi tidak sepenuhnya menyelesaikan masalah ini.
 Saat diubah menjadi satu episode per generasi, generasi yang bermasalah merupakan generasi 3 dan 4.
 Karena keterbatasan waktu, maka tidak memungkinkan dilakukan training ulang untuk bobot dari generasi algoritma ini.
 Adanya juga kemungkinan ini adalah sebuah \emph{bug} dalam RLlib.
 Akan perlu dikomunikasikan lebih lanjut ke pengembang \emph{RLlib} untuk melakukan konfirmasi atas masalah ini.
+
+\section{Tantangan Dalam Implementasi Deep Reinforcement Learning}
+Dalam pembuatan \emph{environment} dan implementasi DRL kepada agen dalam \emph{environment},
+terdapat beberapa tantangan yang kami hadapi.
+
+\begin{enumerate}[nolistsep]
+  \item Kesulitan dalam \emph{debugging} \emph{environment}. 
+  Dalam pengembangan \emph{environment}, 
+  kami menemukan dan membetulkan banyak \emph{bug} yang baru diketahui setelah proses eksperimen dimulai.
+  Karena \emph{environment} sepenuhnya dilakukan oleh agen DRL, sebuah \emph{bug} tidak akan terlihat oleh pengembang \emph{environment}.
+  \emph{Bug} biasanya diketahui dari nilai \emph{reward} yang didapatkan agen.
+  Nilai \emph{reward} yang kurang masuk akal bisa menjadi pertanda sebuah \emph{bug}.
+
+  \item Reproduksi dan contoh kode DRL masih terbatas.
+  Saat mengimplementasikan DRL, kami mencari beberapa contoh dan kode yang dapat direproduksi.
+  Kami tidak menemukan banyak contoh kode DRL yang dapat direproduksi.
+  Sebagian besar \emph{paper} DRL tidak mencantumkan kode dan parameter yang digunakan.
+  
+  \item Mencari nilai \emph{reward} yang tepat bagi agen.
+  DRL sangatlah tergantung dengan nilai \emph{reward} yang diberikan kepada agen ketika agen melakukan sesuatu.
+  Nilai \emph{reward} yang tidak tepat dapat membuat agen melakukan hal yang tidak diinginkan.
+  Jika nilai \emph{reward} terlalu kecil, maka agen akan menjadi pasif.
+  Jika nilai \emph{reward} sebuah aktifitas terlalu besar, maka agen akan terlalu cenderung terhadap suatu aktifitas dan mengabaikan \emph{reward} lainnya.
+
+  \item \emph{Learning curve} yang masih tinggi.
+  Dalam memahami DRL, banyak hal yang perlu dikuasai: pembuatan / penggunaan \emph{environment},
+  mengetahui algoritma DRL yang tepat, mengetahui jenis observasi yang diinginkan (Jika menggunakan \emph{frame} gambar, maka perlu mengetahui ekstraksi fitur \emph{frame} kepada agen DRL),
+  memerlukan sebuah spesifikasi \emph{training} agen yang tepat, dan pengetahuan akan fungsi agen terhadap \emph {environment} yang digunakan.
+
+  \item Kerumitan dalam evaluasi agen untuk \emph{environment} acak. 
+  Dalam game strategi 4X, tidak ada suatu area game yang sama persis.
+  Maka dalam pembuatan agen, perlu diperhatikan kemampuan agen dalam adaptasi ke \emph{environment} yang berbeda bentuk.
+  Selain kebutuhan untuk menggunakan sebuah \emph{random terrain generator} agar kondisi \emph{environment} selalu berubah.
+  Perlu diperhatikan juga interaksi agen yang tidak ada dalam \emph{training}.
+  
+  \item Ketidakstabilan agen DRL.
+  Gambar \ref{fig:attackerMeanEpisodeGraph} dan \ref{fig:defenderMeanEpisodeGraph} menunjukan ketidakstabilan agen DRL.
+  Walau setiap algoritma mempunya tingkat kestabilan yang berbeda beda, beberapa algoritma mungkin lebih stabil dari algoritma lainnya,
+  pada umumnya agen \emph{DRL} tidak stabil saat \emph{training}.
+  Hal ini memberikan kesulitan untuk mengukur dampak sebuah parameter terhadap performa agen DRL.
+  Sehingga \emph{hperparameter tuning} perlu dilakukan dengan iterasi yang banyak.
+  Tergantung dengan kerumitan pada \emph{environment} yang dihadapi agen DRL,
+  \emph{hyperparameter} tuning mungkin tidak dapat dilakukan karena iterasi \emph{training} akan memakan waktu yang lama.
+\end{enumerate}

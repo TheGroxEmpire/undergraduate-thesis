@@ -10,6 +10,9 @@ Dalam penelitian telah diimplementasikan beberapa algoritma \emph{state of the a
 yang mengikuti mekanisme \emph{combat} dalam \emph{Civilization VI}.
 Dalam \emph{environment} ini, terdapat dua agen: agen \emph{attacker} dan agen \emph{defender}.
 Kedua agen mempunyai tujuan yang berbeda \emph{asymmetrical} dan saling berlawanan \emph{adversarial}.
+Dalam eksperimen dilakukan \emph{training} pada setiap algoritma selama 100 juta \emph{environment steps}.
+Dilakukan juga evaluasi terhadap seluruh generasi dari bobot hasil \emph{training}.
+Terdapat dua evaluasi, evaluasi antar generasi dan evaluasi dengan \emph{environment} yang lebih luas dari \emph{environment} saat training.
 Dari eksperimen yang dilakukan dengan algoritma-algoritma tersebut, didapatkan:
 
 \begin{enumerate}[nolistsep]
@@ -28,6 +31,10 @@ Dari eksperimen yang dilakukan dengan algoritma-algoritma tersebut, didapatkan:
   \item Pada evaluasi \emph{Distributed Prioritized Experience Replay Deep Q-Networks} dan \emph{Proximal Policy Optimization} memiliki masalah dalam inferensi.
   Sehingga evaluasi tidak dilakukan secara penuh pada setiap generasi. Hal ini memungkinkan masalah yang sama terjadi ketika model digunakan dalam sebuah environment lain.
 
+  \item Terdapat banyak tantangan dalam mengimplementasikan agen DRL dalam \emph{environment hexagonal grid turn based strategy games}.
+  Tantangan berupa kesulitan dalam \emph{debugging}, jarangnya contoh reproduksi kode DRL, sulitnya mencari reward yang tepat,
+  \emph{learning curve} dalam memahami DRL yang masih tinggi, kerumitan dalam melakukan evaluasi performa agen,
+  dan ketidakstabilan agen DRL. 
 \end{enumerate}
 
 \section{Saran}
